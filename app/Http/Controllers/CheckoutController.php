@@ -134,7 +134,7 @@ class CheckoutController extends Controller
                 'subtotal' => floatval(str_replace(',', '', CartFacade::instance('cart')->subtotal())),
                 'tax' => floatval(str_replace(',', '', CartFacade::instance('cart')->tax())),
                 'total' => floatval(str_replace(',', '', CartFacade::instance('cart')->total())),
-                'status' => 'pending'
+                'status' => 'ordered'
             ]);
 
             // Create order items and update stock
@@ -148,7 +148,7 @@ class CheckoutController extends Controller
                 $order->items()->create([
                     'product_id' => $item->id,
                     'name' => $item->name,
-                    'price' => $item->price,
+                    'unit_price' => $item->price,
                     'quantity' => $item->qty,
                     'subtotal' => $item->price * $item->qty
                 ]);

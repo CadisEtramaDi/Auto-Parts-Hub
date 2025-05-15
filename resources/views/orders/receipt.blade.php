@@ -93,6 +93,7 @@
         @if($order->special_requests)
         <p><strong>Special Instructions:</strong> {{ $order->special_requests }}</p>
         @endif
+        <p><strong>Placed By:</strong> {{ $order->user->name }}</p>
     </div>
 
     <div class="order-details">

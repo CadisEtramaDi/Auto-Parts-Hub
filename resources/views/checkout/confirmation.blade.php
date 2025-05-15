@@ -37,7 +37,7 @@
                         <h5 class="mb-3">Customer Information</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Name:</strong> {{ $checkoutData['name'] }}</p>
+                                <p><strong>Customer Name:</strong> {{ $checkoutData['name'] }}</p>
                                 <p><strong>Phone:</strong> {{ $checkoutData['phone'] }}</p>
                             </div>
                             <div class="col-md-6">
@@ -49,6 +49,7 @@
                         <p><strong>Special Instructions:</strong> {{ $checkoutData['special_instructions'] }}</p>
                         @endif
                         <p><strong>Payment Method:</strong> {{ ucfirst($checkoutData['payment_method']) }}</p>
+                        <p><strong>Placed By (Staff):</strong> {{ Auth::user()->name }}</p>
                     </div>
 
                     <!-- Order Items -->

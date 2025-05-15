@@ -46,6 +46,7 @@
                                 @if($order->special_instructions)
                                 <p><strong>Special Instructions:</strong> {{ $order->special_instructions }}</p>
                                 @endif
+                                <p><strong>Placed By (Staff):</strong> {{ $order->user->name }}</p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Payment Method:</strong> {{ ucfirst($order->payment_method) }}</p>
