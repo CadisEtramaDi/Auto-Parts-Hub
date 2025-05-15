@@ -10,31 +10,72 @@ use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    // List all inventory items
+    // List all products and their stock
     public function index()
     {
-        $inventory = Inventory::with('product')->paginate(10);
-        return view('admin.inventory.index', compact('inventory'));
+        $products = Product::all();
+        return view('admin.inventory.index', compact('products'));
     }
 
-    // Show single inventory item with transactions
-    public function show($id)
+    // Show inventory transactions for a product
+    public function show(Product $product)
     {
-        $inventory = Inventory::findOrFail($id);
-        $transactions = InventoryTransaction::where('inventory_id', $id)->paginate(10);
-        
-        return view('admin.inventory.show', compact('inventory', 'transactions'));
+        $transactions = $product->inventoryTransactions()->latest()->get();
+        return view('admin.inventory.show', compact('product', 'transactions'));
+    }
+
+    // Show form for stock in/out or adjustment
+    public function create(Product $product)
+    {
+        return view('admin.inventory.adjust', compact('product'));
+    }
+
+    // Process stock in/out or adjustment
+    public function store(Request $request, Product $product)
+    {
+        $request->validate([
+            'type' => 'required|in:in,out',
+            'quantity' => 'required|integer|min:1',
+            'reason' => 'nullable|string|max:255',
+        ]);
+
+        $quantity = $request->input('quantity');
+        $type = $request->input('type');
+        $reason = $request->input('reason');
+
+        if ($type === 'out' && $product->quantity < $quantity) {
+            return redirect()->back()->with('error', 'Not enough stock available.');
+        }
+
+        // Update product quantity
+        if ($type === 'in') {
+            $product->increment('quantity', $quantity);
+        } else {
+            $product->decrement('quantity', $quantity);
+        }
+
+        // Log the transaction
+        InventoryTransaction::create([
+            'product_id' => $product->id,
+            'type' => $type,
+            'quantity' => $quantity,
+            'reason' => $reason,
+            'user_id' => Auth::id(),
+        ]);
+
+        return redirect()->route('admin.inventory.show', $product->id)
+            ->with('success', 'Inventory updated successfully.');
     }
 
     // Show form to create new inventory item
-    public function create()
+    public function createInventory()
     {
         $products = Product::doesntHave('inventory')->get();
         return view('admin.inventory.create', compact('products'));
     }
 
     // Store new inventory item
-    public function store(Request $request)
+    public function storeInventory(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id|unique:inventories,product_id',
@@ -183,5 +224,29 @@ class InventoryController extends Controller
         
         return redirect()->route('admin.inventory.index')
             ->with('success', 'Stock removed successfully');
+    }
+
+    public function lowStock()
+    {
+        $threshold = 10; // You can make this configurable
+        $products = Product::where('quantity', '<=', $threshold)->get();
+        return view('admin.inventory.low_stock', compact('products', 'threshold'));
+    }
+
+    public function report(Request $request)
+    {
+        $products = Product::with('inventoryTransactions')->get();
+        $from = $request->input('from');
+        $to = $request->input('to');
+
+        foreach ($products as $product) {
+            $query = $product->inventoryTransactions();
+            if ($from && $to) {
+                $query->whereBetween('created_at', [$from, $to]);
+            }
+            $product->filteredTransactions = $query->get();
+        }
+
+        return view('admin.inventory.report', compact('products', 'from', 'to'));
     }
 }

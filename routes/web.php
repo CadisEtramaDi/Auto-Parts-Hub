@@ -100,6 +100,12 @@ Route::middleware(['auth',AuthAdmin::class])->group(function(){
 
     Route::get('/orders/{order}/receipt', [App\Http\Controllers\Admin\OrderController::class, 'receipt'])->name('orders.receipt');
 
+    Route::get('/admin/inventory/low-stock', [\App\Http\Controllers\InventoryController::class, 'lowStock'])->name('admin.inventory.low_stock');
+    Route::get('/admin/inventory/report', [\App\Http\Controllers\InventoryController::class, 'report'])->name('admin.inventory.report');
+
+    Route::resource('purchase_orders', \App\Http\Controllers\PurchaseOrderController::class)->except(['edit', 'update']);
+    Route::post('purchase_orders/{purchase_order}/receive', [\App\Http\Controllers\PurchaseOrderController::class, 'receive'])->name('purchase_orders.receive');
+
 });
 
 // Checkout Routes
@@ -119,4 +125,11 @@ Route::middleware(['auth'])->group(function () {
     
     // Orders list
     Route::get('/orders', [App\Http\Controllers\UserController::class, 'orders'])->name('orders.index');
+});
+
+Route::prefix('admin/inventory')->name('admin.inventory.')->middleware('auth')->group(function () {
+    Route::get('/', [InventoryController::class, 'index'])->name('index');
+    Route::get('/{product}', [InventoryController::class, 'show'])->name('show');
+    Route::get('/{product}/adjust', [InventoryController::class, 'create'])->name('adjust');
+    Route::post('/{product}/adjust', [InventoryController::class, 'store'])->name('adjust.store');
 });

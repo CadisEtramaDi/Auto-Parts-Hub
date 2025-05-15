@@ -1,55 +1,33 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Inventory Details</h1>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">{{ $inventory->product->name }}</h5>
-            <p class="card-text"> 
-                <strong>SKU:</strong> {{ $inventory->sku }}<br>
-                <strong>Quantity:</strong> {{ $inventory->quantity }}<br>
-                <strong>Location:</strong> {{ $inventory->location }}
-            </p>
-            <a href="{{ route('admin.inventory.edit', $inventory->id) }}" class="btn btn-primary">Edit</a>
-        </div>
+<div class="container py-4">
+    <h2 class="mb-4">Inventory History for {{ $product->name }}</h2>
+    <div class="mb-3">
+        <a href="{{ route('admin.inventory.adjust', $product->id) }}" class="btn btn-primary">Adjust Stock</a>
+        <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary">Back to Inventory</a>
     </div>
-    
-    <h3>Transactions</h3>
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Type</th>
                 <th>Quantity</th>
-                <th>Reference</th>
-                <th>Note</th>
-                <th>User</th>
+                <th>Reason</th>
+                <th>By</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($transactions as $transaction)
+            @foreach($transactions as $tx)
             <tr>
-                <td>{{ $transaction->created_at->format('Y-m-d H:i') }}</td>
-                <td>
-                    @if($transaction->type == 'stock_in')
-                        <span class="badge bg-success">Stock In</span>
-                    @else
-                        <span class="badge bg-danger">Stock Out</span>
-                    @endif
-                </td>
-                <td>{{ $transaction->quantity }}</td>
-                <td>{{ $transaction->reference }}</td>
-                <td>{{ $transaction->note }}</td>
-                <td>{{ $transaction->user->name }}</td>
+                <td>{{ $tx->created_at->format('M d, Y H:i') }}</td>
+                <td>{{ ucfirst($tx->type) }}</td>
+                <td>{{ $tx->quantity }}</td>
+                <td>{{ $tx->reason }}</td>
+                <td>{{ $tx->user ? $tx->user->name : 'System' }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    
-    {{ $transactions->links() }}
-    
-    <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary">Back to Inventory</a>
 </div>
 @endsection
