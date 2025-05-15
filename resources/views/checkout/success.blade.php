@@ -74,7 +74,7 @@
                                     <tr>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>${{ number_format($item->price, 2) }}</td>
+                                        <td>${{ number_format($item->unit_price, 2) }}</td>
                                         <td>${{ number_format($item->subtotal, 2) }}</td>
                                     </tr>
                                     @endforeach
