@@ -13,13 +13,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn([
-                'shipping_address',
-                'shipping_city',
-                'shipping_state',
-                'shipping_zipcode',
-                'shipping_phone'
-            ]);
+            if (Schema::hasColumn('orders', 'shipping_address')) {
+                $table->dropColumn('shipping_address');
+            }
+            if (Schema::hasColumn('orders', 'shipping_city')) {
+                $table->dropColumn('shipping_city');
+            }
+            if (Schema::hasColumn('orders', 'shipping_state')) {
+                $table->dropColumn('shipping_state');
+            }
+            if (Schema::hasColumn('orders', 'shipping_zipcode')) {
+                $table->dropColumn('shipping_zipcode');
+            }
+            if (Schema::hasColumn('orders', 'shipping_phone')) {
+                $table->dropColumn('shipping_phone');
+            }
         });
     }
 

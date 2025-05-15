@@ -1,45 +1,125 @@
-@extends('layouts.admin')
+@extends('layouts.app')
+
 @section('content')
-<div class="main-content-inner">
-    <div class="main-content-wrap">
-        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Order Details #{{ $order->id }}</h3>
-            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                <li>
-                    <a href="{{ route('admin.index') }}">
-                        <div class="text-tiny">Dashboard</div>
-                    </a>
-                </li>
-                <li>
-                    <i class="icon-chevron-right"></i>
-                </li>
-                <li>
-                    <a href="{{ route('admin.orders.index') }}">
-                        <div class="text-tiny">Orders</div>
-                    </a>
-                </li>
-                <li>
-                    <i class="icon-chevron-right"></i>
-                </li>
-                <li>
-                    <div class="text-tiny">Order #{{ $order->id }}</div>
-                </li>
-            </ul>
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Order Details #{{ $order->id }}</h5>
+            <div>
+                <a href="{{ route('admin.orders.receipt', $order) }}" class="btn btn-light btn-sm">Print Receipt</a>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-light btn-sm">Back to Orders</a>
+            </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Order Items -->
-                <div class="wg-box mb-4">
-                    <h4 class="mb-4">Order Items</h4>
+        <div class="card-body">
+            <div class="row mb-4">
+                <!-- Order Status -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Order Status</h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-{{ $order->status == 'pending' ? 'warning' : ($order->status == 'completed' ? 'success' : ($order->status == 'cancelled' ? 'danger' : 'primary')) }} me-2">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                                    Update Status ▼
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Status -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Payment Information</h6>
+                            <div class="mb-2">
+                                <strong>Method:</strong> {{ ucfirst($order->payment_method) }}
+                                @if($order->payment_method == 'cash')
+                                    <small class="text-muted">(Pay with cash upon pickup)</small>
+                                @elseif($order->payment_method == 'gcash')
+                                    <small class="text-muted">(GCash payment)</small>
+                                @elseif($order->payment_method == 'paymaya')
+                                    <small class="text-muted">(PayMaya payment)</small>
+                                @endif
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }} me-2">
+                                    {{ ucfirst($order->payment_status) }}
+                                </span>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updatePaymentModal">
+                                    Update Payment Status ▼
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Customer Information -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Customer Information</h6>
+                            <div class="mb-2">
+                                <strong>Name:</strong> {{ $order->name }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Email:</strong> {{ $order->user->email }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Phone:</strong> {{ $order->phone }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Preferred Pickup:</strong> {{ $order->pickup_date->format('M d, Y') }} at {{ date('g:i A', strtotime($order->pickup_time)) }}
+                                <small class="text-muted">(Store hours: 9 AM - 5 PM, Lunch: 12 PM - 1 PM)</small>
+                            </div>
+                            @if($order->special_requests)
+                            <div class="mb-2">
+                                <strong>Special Instructions:</strong> {{ $order->special_requests }}
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Order Summary</h6>
+                            <div class="mb-2">
+                                <strong>Order Date:</strong> {{ $order->created_at->format('M d, Y g:i A') }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Subtotal:</strong> ${{ number_format($order->subtotal, 2) }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Tax:</strong> ${{ number_format($order->tax, 2) }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>Total:</strong> ${{ number_format($order->total, 2) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">Order Items</h6>
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th class="text-center">Price</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Subtotal</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,100 +128,115 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             @if($item->product && $item->product->image)
-                                                <img src="{{ asset('storage/' . $item->product->image) }}" 
-                                                     alt="{{ $item->product_name }}" 
-                                                     class="img-thumbnail" 
-                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                            <img src="{{ asset('uploads/products/'.$item->product->image) }}" 
+                                                 alt="{{ $item->name }}" class="me-2"
+                                                 style="width: 50px; height: 50px; object-fit: cover;">
                                             @endif
-                                            <div class="ms-3">
-                                                <div class="font-medium">{{ $item->product_name }}</div>
-                                                @if($item->color || $item->size)
-                                                    <div class="text-muted small">
-                                                        @if($item->color) Color: {{ $item->color }}@endif
-                                                        @if($item->size) Size: {{ $item->size }}@endif
-                                                    </div>
-                                                @endif
+                                            <div>
+                                                <div>{{ $item->name }}</div>
+                                                <small class="text-muted">SKU: {{ $item->product->sku ?? 'N/A' }}</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">${{ number_format($item->price, 2) }}</td>
-                                    <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-center">${{ number_format($item->subtotal, 2) }}</td>
+                                    <td>${{ number_format($item->price, 2) }}</td>
+                                    <td>{{ $item->quantity }}</td>
+                                    <td class="text-end">${{ number_format($item->subtotal, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                    <td class="text-end">${{ number_format($order->subtotal, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Tax:</strong></td>
+                                    <td class="text-end">${{ number_format($order->tax, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>${{ number_format($order->total, 2) }}</strong></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
-                </div>
-
-                <!-- Order Notes -->
-                @if($order->notes)
-                <div class="wg-box mb-4">
-                    <h4 class="mb-3">Order Notes</h4>
-                    <p class="mb-0">{{ $order->notes }}</p>
-                </div>
-                @endif
-            </div>
-
-            <div class="col-md-4">
-                <!-- Customer Information -->
-                <div class="wg-box mb-4">
-                    <h4 class="mb-3">Customer Information</h4>
-                    <div class="customer-info">
-                        <p class="mb-2"><strong>Name:</strong> {{ $order->user->name }}</p>
-                        <p class="mb-2"><strong>Email:</strong> {{ $order->user->email }}</p>
-                        <p class="mb-0"><strong>Phone:</strong> {{ $order->user->mobile ?? 'N/A' }}</p>
-                    </div>
-                </div>
-
-                <!-- Order Summary -->
-                <div class="wg-box mb-4">
-                    <h4 class="mb-3">Order Summary</h4>
-                    <div class="order-summary">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span>${{ number_format($order->subtotal, 2) }}</span>
-                        </div>
-                        @if($order->discount > 0)
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Discount:</span>
-                            <span>-${{ number_format($order->discount, 2) }}</span>
-                        </div>
-                        @endif
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax:</span>
-                            <span>${{ number_format($order->tax, 2) }}</span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-0">
-                            <strong>Total:</strong>
-                            <strong>${{ number_format($order->total, 2) }}</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order Status -->
-                <div class="wg-box">
-                    <h4 class="mb-3">Order Status</h4>
-                    <form action="{{ route('admin.orders.update-status', $order) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <select name="status" class="form-select" onchange="this.form.submit()">
-                                @foreach($statusOptions as $value => $label)
-                                    <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </form>
-                    <p class="mb-0 text-muted">
-                        <small>Last updated: {{ $order->updated_at->format('M d, Y H:i') }}</small>
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Update Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.orders.update-status', $order) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select" required>
+                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>Ready for Pickup</option>
+                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Payment Status Modal -->
+<div class="modal fade" id="updatePaymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.orders.update-payment-status', $order) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Payment Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Payment Status</label>
+                        <select name="payment_status" class="form-select" required>
+                            <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
+                            <option value="failed" {{ $order->payment_status == 'failed' ? 'selected' : '' }}>Failed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('styles')
+<style>
+.card-title {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.badge {
+    padding: 0.5em 1em;
+}
+</style>
+@endpush
 @endsection 

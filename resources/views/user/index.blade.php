@@ -1,20 +1,37 @@
-@extends("layouts.app")
-@section("content")
-<main class="pt-90">
-    <div class="mb-4 pb-4"></div>
-    <section class="my-account container">
-      <h2 class="page-title">My Account</h2>
-      <div class="row">
-        <div class="col-lg-3">
-          @include('user.account-nav')
+@extends('layouts.app')
+
+@section('content')
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Account Menu</h3>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ route('user.index') }}" class="list-group-item list-group-item-action active">Dashboard</a>
+                    <a href="{{ route('user.profile') }}" class="list-group-item list-group-item-action">Profile</a>
+                    <a href="#" class="list-group-item list-group-item-action">Orders</a>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-9">
-          <div class="page-content my-account__dashboard">
-            <p>Hello <strong>{{ Auth::user()->name }}</strong></p>
-            <p>From your account dashboard you can view your <a class="unerline-link" href="{{ route('user.orders.index') }}">recent orders</a>, manage your shipping addresses, and edit your password and account details.</p>
-          </div>
+
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Dashboard</h3>
+                </div>
+                <div class="card-body">
+                    <h5>Welcome, {{ Auth::user()->name }}!</h5>
+                    <p>From your account dashboard you can:</p>
+                    <ul>
+                        <li>View your recent orders</li>
+                        <li>Manage your contact information</li>
+                        <li>Update your profile details</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
-  </main>
+    </div>
+</div>
 @endsection

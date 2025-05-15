@@ -22,7 +22,9 @@ class Coupon extends Model
     ];
 
     // Cast date fields to Carbon instances
-    protected $dates = [
-        'expiry_date',
+    protected $casts = [
+        'value' => 'float',
+        'cart_value' => 'float',
+        'expiry_date' => 'date'
     ];
 }

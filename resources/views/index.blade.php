@@ -79,123 +79,6 @@
     </section>
     <div class="container mw-1620 bg-white border-radius-10">
       <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
-      <section class="category-carousel container">
-        <h2 class="section-title text-center mb-3 pb-xl-2 mb-xl-4">You Might Like</h2>
-
-        <div class="position-relative">
-          <div class="swiper-container js-swiper-slider" data-settings='{
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": 8,
-              "slidesPerGroup": 1,
-              "effect": "none",
-              "loop": true,
-              "navigation": {
-                "nextEl": ".products-carousel__next-1",
-                "prevEl": ".products-carousel__prev-1"
-              },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 2,
-                  "slidesPerGroup": 2,
-                  "spaceBetween": 15
-                },
-                "768": {
-                  "slidesPerView": 4,
-                  "slidesPerGroup": 4,
-                  "spaceBetween": 30
-                },
-                "992": {
-                  "slidesPerView": 6,
-                  "slidesPerGroup": 1,
-                  "spaceBetween": 45,
-                  "pagination": false
-                },
-                "1200": {
-                  "slidesPerView": 8,
-                  "slidesPerGroup": 1,
-                  "spaceBetween": 60,
-                  "pagination": false
-                }
-              }
-            }'>
-            <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_1.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Women<br />Tops</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_2.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Women<br />Pants</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_3.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Women<br />Clothes</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_4.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Men<br />Jeans</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_5.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Men<br />Shirts</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_6.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Men<br />Shoes</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_7.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Women<br />Dresses</a>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <img loading="lazy" class="w-100 h-auto mb-3" src="{{asset('assets/images/home/demo3/category_8.png')}}" width="124"
-                  height="124" alt="" />
-                <div class="text-center">
-                  <a href="#" class="menu-link fw-medium">Kids<br />Tops</a>
-                </div>
-              </div>
-            </div><!-- /.swiper-wrapper -->
-          </div><!-- /.swiper-container js-swiper-slider -->
-
-          <div
-            class="products-carousel__prev products-carousel__prev-1 position-absolute top-50 d-flex align-items-center justify-content-center">
-            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_prev_md" />
-            </svg>
-          </div><!-- /.products-carousel__prev -->
-          <div
-            class="products-carousel__next products-carousel__next-1 position-absolute top-50 d-flex align-items-center justify-content-center">
-            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_next_md" />
-            </svg>
-          </div><!-- /.products-carousel__next -->
-        </div><!-- /.position-relative -->
-      </section>
-
-      <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 
       <section class="hot-deals container">
         <h2 class="section-title text-center mb-3 pb-xl-3 mb-xl-4">Hot Deals</h2>
@@ -236,31 +119,32 @@
                   "autoplay": {
                     "delay": 5000
                   },
-                  "slidesPerView": 4,
-                  "slidesPerGroup": 4,
+                  "slidesPerView": 3,
+                  "slidesPerGroup": 3,
                   "effect": "none",
                   "loop": false,
+                  "spaceBetween": 15,
                   "breakpoints": {
                     "320": {
-                      "slidesPerView": 2,
-                      "slidesPerGroup": 2,
-                      "spaceBetween": 14
+                      "slidesPerView": 1,
+                      "slidesPerGroup": 1,
+                      "spaceBetween": 10
                     },
                     "768": {
                       "slidesPerView": 2,
-                      "slidesPerGroup": 3,
-                      "spaceBetween": 24
+                      "slidesPerGroup": 2,
+                      "spaceBetween": 15
                     },
                     "992": {
-                      "slidesPerView": 3,
-                      "slidesPerGroup": 1,
-                      "spaceBetween": 30,
+                      "slidesPerView": 2,
+                      "slidesPerGroup": 2,
+                      "spaceBetween": 20,
                       "pagination": false
                     },
                     "1200": {
-                      "slidesPerView": 4,
-                      "slidesPerGroup": 1,
-                      "spaceBetween": 30,
+                      "slidesPerView": 3,
+                      "slidesPerGroup": 3,
+                      "spaceBetween": 20,
                       "pagination": false
                     }
                   }
@@ -268,19 +152,56 @@
                 <div class="swiper-wrapper">
                   @foreach($carouselProducts as $product)
                   <div class="swiper-slide">
-                    <div class="overflow-hidden position-relative h-100">
-                      <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-                        <img loading="lazy" src="{{ asset('uploads/products/'.$product->image) }}" width="542" height="733"
+                    <div class="overflow-hidden position-relative h-100" style="min-height: 250px;">
+                      <div class="slideshow-character position-absolute top-0 end-0 w-100 h-100 d-flex justify-content-center align-items-center">
+                        @php
+                          $categorySlug = $product->category ? $product->category->slug : '';
+                          $imagePath = 'assets/images/categories/';
+                          
+                          // Map category slugs to available image files
+                          switch($categorySlug) {
+                              case 'electrical-components':
+                              case 'electrical-system':
+                                $imagePath .= 'electrical.jpg';
+                                break;
+                              case 'brake-system':
+                                $imagePath .= 'brake.jpg';
+                                break;
+                              case 'engine-parts':
+                                $imagePath .= 'engine.jpg';
+                                break;
+                              case 'cooling-components':
+                              case 'cooling-system':
+                                $imagePath .= 'cooling.jpg';
+                                break;
+                              case 'transmission-components':
+                                $imagePath .= 'transmission.jpg';
+                                break;
+                              case 'suspension-system':
+                                $imagePath .= 'suspension.jpg';
+                                break;
+                              case 'fuel-system':
+                                $imagePath .= 'fuel.jpg';
+                                break;
+                              case 'exhaust-system':
+                                $imagePath .= 'exhaust.jpg';
+                                break;
+                              default:
+                                $imagePath .= 'brake.jpg'; // Default image if no match
+                          }
+                        @endphp
+                        <img loading="lazy" src="{{ asset($imagePath) }}" width="350" height="350"
                           alt="{{ $product->name }}"
-                          class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-auto h-auto" />
+                          class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-100 h-auto" 
+                          style="max-height: 180px; object-fit: contain;" />
                       </div>
                       <div class="slideshow-text container position-absolute start-50 top-50 translate-middle">
-                        <h6 class="text_dash text-uppercase fs-base fw-medium animate animate_fade animate_btt animate_delay-3">
-                          {{ $product->category->name }}</h6>
-                        <h2 class="h1 fw-normal mb-0 animate animate_fade animate_btt animate_delay-5">{{ $product->name }}</h2>
-                        <h2 class="h1 fw-bold animate animate_fade animate_btt animate_delay-5">${{ $product->sale_price ?: $product->regular_price }}</h2>
+                        <h6 class="text_dash text-uppercase fs-6 fw-medium animate animate_fade animate_btt animate_delay-3">
+                          {{ $product->category ? $product->category->name : 'Product' }}</h6>
+                        <h2 class="h5 fw-normal mb-0 animate animate_fade animate_btt animate_delay-5">{{ $product->name }}</h2>
+                        <h2 class="h5 fw-bold animate animate_fade animate_btt animate_delay-5">${{ $product->sale_price ?: $product->regular_price }}</h2>
                         <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}"
-                          class="btn-link btn-link_lg default-underline fw-medium animate animate_fade animate_btt animate_delay-7">Shop
+                          class="btn-link btn-link_sm default-underline fw-medium animate animate_fade animate_btt animate_delay-7">Shop
                           Now</a>
                       </div>
                     </div>
@@ -299,27 +220,29 @@
         <div class="row">
           <div class="col-md-6">
             <div class="category-banner__item border-radius-10 mb-5">
-              <img loading="lazy" class="h-auto" src="{{asset('assets/images/home/demo3/category_9.jpg')}}" width="690" height="665"
-                alt="" />
+              <img loading="lazy" class="h-auto w-100" src="{{asset('assets/images/banners/engine-parts-banner.jpg')}}" width="690" height="665"
+                alt="Engine Parts" />
               <div class="category-banner__item-mark">
-                Starting at $19
+                Starting at $199
               </div>
               <div class="category-banner__item-content">
-                <h3 class="mb-0">Blazers</h3>
-                <a href="#" class="btn-link default-underline text-uppercase fw-medium">Shop Now</a>
+                <h3 class="mb-0">Engine Parts</h3>
+                <p class="text-white mb-3">High Performance Components</p>
+                <a href="#" class="btn btn-outline-light">Shop Engine Parts</a>
               </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="category-banner__item border-radius-10 mb-5">
-              <img loading="lazy" class="h-auto" src="{{asset('assets/images/home/demo3/category_10.jpg')}}" width="690" height="665"
-                alt="" />
+              <img loading="lazy" class="h-auto w-100" src="{{asset('assets/images/categories/brake.jpg')}}" width="690" height="665"
+                alt="Brake System" />
               <div class="category-banner__item-mark">
-                Starting at $19
+                Starting at $79
               </div>
               <div class="category-banner__item-content">
-                <h3 class="mb-0">Sportswear</h3>
-                <a href="#" class="btn-link default-underline text-uppercase fw-medium">Shop Now</a>
+                <h3 class="mb-0">Brake System</h3>
+                <p class="text-white mb-3">Premium Safety Components</p>
+                <a href="#" class="btn btn-outline-light">Shop Brake Parts</a>
               </div>
             </div>
           </div>
@@ -336,7 +259,7 @@
             <div class="product-card product-card_style3 mb-3 mb-md-4 mb-xxl-5">
               <div class="pc__img-wrapper">
                 <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}">
-                  <img loading="lazy" src="{{ asset('uploads/products/'.$product->image) }}" width="330" height="400"
+                  <img loading="lazy" src="{{ asset('images') }}/{{ $product->image }}" width="330" height="400"
                     alt="{{ $product->name }}" class="pc__img">
                 </a>
                 @if($product->sale_price)
@@ -394,95 +317,180 @@
 
     <!-- Featured Products Section -->
     <section class="featured-products container">
-      <h2 class="section-title text-center mb-3 pb-xl-2 mb-xl-4">Featured Products</h2>
-      <div class="row">
+      <h2 class="section-title text-center mb-4">Featured Products</h2>
+      <div class="row g-4">
         @foreach($featuredProducts as $product)
-        <div class="col-6 col-md-4 col-lg-3 mb-4">
-          <div class="product-card card h-100">
-            <div class="card-img-top position-relative">
-              <a href="{{ route('shop.product.details', $product->slug) }}" class="d-block">
-                <img src="{{ asset('uploads/products/'.$product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="product-card h-100 border-radius-10 p-3 bg-white shadow-sm hover-shadow transition-all">
+            <div class="position-relative mb-3">
+              <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" class="d-block">
+                <img loading="lazy" src="{{ asset('images') }}/{{ $product->image }}" 
+                     class="img-fluid rounded product-img" 
+                     alt="{{ $product->name }}"
+                     style="width: 100%; height: 200px; object-fit: cover;">
               </a>
               @if($product->sale_price)
-              <div class="badge bg-danger position-absolute top-0 start-0 mt-2 ms-2">Sale</div>
-              @endif
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">
-                <a href="{{ route('shop.product.details', $product->slug) }}" class="text-dark text-decoration-none">{{ $product->name }}</a>
-              </h5>
-              <div class="price-block mb-3">
-                @if($product->sale_price)
-                <span class="text-danger me-2">${{ $product->sale_price }}</span>
-                <s class="text-muted">${{ $product->regular_price }} 
-                @else
-                <span class="text-dark">${{ $product->regular_price }}</span>
-                @endif
+              <div class="position-absolute top-0 end-0 m-2">
+                <span class="badge bg-danger px-2 py-1">Sale</span>
               </div>
+              @endif
+              <div class="position-absolute bottom-0 start-0 m-2">
+                <span class="badge bg-primary px-2 py-1">{{ $product->category->name }}</span>
+              </div>
+            </div>
+
+            <div class="product-details">
+              <h5 class="product-title mb-2">
+                <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" 
+                   class="text-dark text-decoration-none">{{ $product->name }}</a>
+              </h5>
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="product-price">
+                @if($product->sale_price)
+                  <span class="text-muted text-decoration-line-through me-2">${{ number_format($product->regular_price, 2) }}</span>
+                  <span class="text-danger fw-bold">${{ number_format($product->sale_price, 2) }}</span>
+                  @else
+                  <span class="text-dark fw-bold">${{ number_format($product->regular_price, 2) }}</span>
+                  @endif
+                </div>
+                <div class="stock-status">
+                  @if($product->stock_status == 'instock')
+                  <span class="badge bg-success">In Stock</span>
+                @else
+                  <span class="badge bg-danger">Out of Stock</span>
+                @endif
+                </div>
+              </div>
+
+              <div class="product-actions d-flex gap-2">
               @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
-                <a href="{{ route('cart.index') }}" class="btn btn-warning mt-auto">Go to Cart</a>
+                  <a href="{{ route('cart.index') }}" 
+                     class="btn btn-primary w-100">
+                     <i class="fas fa-shopping-cart me-1"></i> View Cart
+                  </a>
               @else
-                <form action="{{ route('cart.add') }}" method="POST" class="mt-auto">
+                  <form action="{{ route('cart.add') }}" method="POST" class="w-100">
                   @csrf
                   <input type="hidden" name="id" value="{{ $product->id }}">
                   <input type="hidden" name="name" value="{{ $product->name }}">
                   <input type="hidden" name="price" value="{{ $product->sale_price ?: $product->regular_price }}">
                   <input type="hidden" name="quantity" value="1">
-                  <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                    </button>
                 </form>
               @endif
+                <button class="btn btn-outline-primary flex-shrink-0" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#quickView" 
+                        title="Quick view">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
         @endforeach
+      </div>
+
+      <div class="text-center mt-5">
+        <a href="{{ route('shop.index') }}" 
+           class="btn btn-outline-primary btn-lg px-4">
+          View All Products <i class="fas fa-arrow-right ms-2"></i>
+        </a>
       </div>
     </section>
 
     <!-- New Arrivals Section -->
-    <section class="new-arrivals container mt-5">
-      <h2 class="section-title text-center mb-3 pb-xl-2 mb-xl-4">New Arrivals</h2>
-      <div class="row">
+    <section class="new-arrivals container mt-5 mb-5">
+      <h2 class="section-title text-center mb-4">New Arrivals</h2>
+      <div class="row g-4">
         @foreach($newArrivals as $product)
-        <div class="col-6 col-md-4 col-lg-3 mb-4">
-          <div class="product-card card h-100">
-            <div class="card-img-top position-relative">
-              <a href="{{ route('shop.product.details', $product->slug) }}" class="d-block">
-                <img src="{{ asset('uploads/products/'.$product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="product-card h-100 border-radius-10 p-3 bg-white shadow-sm hover-shadow transition-all">
+            <div class="position-relative mb-3">
+              <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" class="d-block">
+                <img loading="lazy" src="{{ asset('images') }}/{{ $product->image }}" 
+                     class="img-fluid rounded product-img" 
+                     alt="{{ $product->name }}"
+                     style="width: 100%; height: 200px; object-fit: cover;">
               </a>
               @if($product->sale_price)
-              <div class="badge bg-danger position-absolute top-0 start-0 mt-2 ms-2">Sale</div>
-              @endif
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">
-                <a href="{{ route('shop.product.details', $product->slug) }}" class="text-dark text-decoration-none">{{ $product->name }}</a>
-              </h5>
-              <div class="price-block mb-3">
-                @if($product->sale_price)
-                <span class="text-danger me-2">${{ $product->sale_price }}</span>
-                <s class="text-muted">${{ $product->regular_price }} 
-                @else
-                <span class="text-dark">${{ $product->regular_price }}</span>
-                @endif
+              <div class="position-absolute top-0 end-0 m-2">
+                <span class="badge bg-danger px-2 py-1">Sale</span>
               </div>
+              @endif
+              <div class="position-absolute top-0 start-0 m-2">
+                <span class="badge bg-info px-2 py-1">New</span>
+              </div>
+              <div class="position-absolute bottom-0 start-0 m-2">
+                <span class="badge bg-primary px-2 py-1">{{ $product->category->name }}</span>
+              </div>
+            </div>
+
+            <div class="product-details">
+              <h5 class="product-title mb-2">
+                <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" 
+                   class="text-dark text-decoration-none">{{ $product->name }}</a>
+              </h5>
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="product-price">
+                @if($product->sale_price)
+                  <span class="text-muted text-decoration-line-through me-2">${{ number_format($product->regular_price, 2) }}</span>
+                  <span class="text-danger fw-bold">${{ number_format($product->sale_price, 2) }}</span>
+                  @else
+                  <span class="text-dark fw-bold">${{ number_format($product->regular_price, 2) }}</span>
+                  @endif
+                </div>
+                <div class="stock-status">
+                  @if($product->stock_status == 'instock')
+                  <span class="badge bg-success">In Stock</span>
+                @else
+                  <span class="badge bg-danger">Out of Stock</span>
+                @endif
+                </div>
+              </div>
+
+              <div class="product-actions d-flex gap-2">
               @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
-                <a href="{{ route('cart.index') }}" class="btn btn-warning mt-auto">Go to Cart</a>
+                  <a href="{{ route('cart.index') }}" 
+                     class="btn btn-primary w-100">
+                     <i class="fas fa-shopping-cart me-1"></i> View Cart
+                  </a>
               @else
-                <form action="{{ route('cart.add') }}" method="POST" class="mt-auto">
+                  <form action="{{ route('cart.add') }}" method="POST" class="w-100">
                   @csrf
                   <input type="hidden" name="id" value="{{ $product->id }}">
                   <input type="hidden" name="name" value="{{ $product->name }}">
                   <input type="hidden" name="price" value="{{ $product->sale_price ?: $product->regular_price }}">
                   <input type="hidden" name="quantity" value="1">
-                  <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                    </button>
                 </form>
               @endif
+                <button class="btn btn-outline-primary flex-shrink-0" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#quickView" 
+                        title="Quick view">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
         @endforeach
       </div>
+
+      <div class="text-center mt-5">
+        <a href="{{ route('shop.index') }}" 
+           class="btn btn-outline-primary btn-lg px-4">
+          Browse All New Arrivals <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
     </section>
 
   </main>
-@endsection
+@endsection~

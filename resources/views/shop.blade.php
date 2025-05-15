@@ -283,13 +283,51 @@
                 <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
                   <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                      <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset('uploads/products') }}/{{ $product->image }}" width="330"
+                      @php
+                        // Determine the correct image path based on category
+                        $imagePath = 'images/';
+                        
+                        // Check if product has a category
+                        if($product->category) {
+                          $parentCategory = $product->category->parent ? $product->category->parent->slug : '';
+                          $categorySlug = $product->category->slug;
+                          
+                          // Check if it's a Motor Parts category
+                          if($parentCategory == 'motor-parts') {
+                            $imagePath = 'images/Motor Parts/' . str_replace('-', ' ', ucwords($categorySlug, '-')) . '/';
+                          }
+                          // Check if it's a Vehicle System category
+                          elseif($parentCategory == 'vehicle-systems') {
+                            $imagePath = 'images/Vehicle System/' . str_replace('-', ' ', ucwords($categorySlug, '-')) . '/';
+                          }
+                        }
+                      @endphp
+                      <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($imagePath . $product->image) }}" width="330"
                           height="400" alt="{{ $product->name }}" class="pc__img"></a>
                     </div>
                     <div class="swiper-slide">
                         @foreach (explode(",",$product->images) as $gimg)
-                      <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset('uploads/products') }}/{{ $gimg }}"
-                          width="330" height="400" alt="{{ $product->name }}" class="pc__img"></a>
+                          @php
+                            // Determine the correct image path based on category
+                            $imagePath = 'images/';
+                            
+                            // Check if product has a category
+                            if($product->category) {
+                              $parentCategory = $product->category->parent ? $product->category->parent->slug : '';
+                              $categorySlug = $product->category->slug;
+                              
+                              // Check if it's a Motor Parts category
+                              if($parentCategory == 'motor-parts') {
+                                $imagePath = 'images/Motor Parts/' . str_replace('-', ' ', ucwords($categorySlug, '-')) . '/';
+                              }
+                              // Check if it's a Vehicle System category
+                              elseif($parentCategory == 'vehicle-systems') {
+                                $imagePath = 'images/Vehicle System/' . str_replace('-', ' ', ucwords($categorySlug, '-')) . '/';
+                              }
+                            }
+                          @endphp
+                          <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($imagePath . $gimg) }}"
+                              width="330" height="400" alt="{{ $product->name }}" class="pc__img"></a>
                           @endforeach
                     </div>
                   </div>

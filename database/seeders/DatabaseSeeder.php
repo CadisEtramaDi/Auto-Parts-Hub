@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            MotorPartsSeeder::class,
+            SliderSeeder::class
         ]);
     }
 }

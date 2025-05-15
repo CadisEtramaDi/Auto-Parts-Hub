@@ -2,99 +2,151 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Transaction;
+use App\Models\Coupon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Session;
+use Surfsidemedia\Shoppingcart\Facades\Cart;
 
-class OrderController extends Controller
+class CartController extends Controller
 {
     public function index()
     {
-        $orders = Auth::user()->orders()->latest()->paginate(10);
-        return view('orders.index', compact('orders'));
+        $items = Cart::instance('cart')->content();
+        return view('cart',compact('items'));
     }
 
-    public function show(Order $order)
+    public function add_to_cart(Request $request)
     {
-        // Ensure the user can only view their own orders
-        if ($order->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+        Cart::instance('cart')->add($request->id,$request->name,$request->quantity,$request->price)->associate('App\Models\Product');
+        return redirect()->back();
+    }
+
+    public function increase_cart_quantity($rowId)
+    {
+        $product = Cart::instance('cart')->get($rowId);
+        $qty = $product->qty + 1;
+        Cart::instance('cart')->update($rowId,$qty);
+        return redirect()->back();
+    }
+
+    public function decrease_cart_quantity($rowId)
+    {
+        $product = Cart::instance('cart')->get($rowId);
+        $qty = $product->qty - 1;
+        Cart::instance('cart')->update($rowId,$qty);
+        return redirect()->back();
+    }
+
+    public function remove_item($rowId)
+    {
+        Cart::instance('cart')->remove($rowId);
+        return redirect()->back();
+    }
+
+    public function empty_cart()
+    {
+        Cart::instance('cart')->destroy();
+        return redirect()->back();
+    }
+
+    public function apply_coupon_code(Request $request)
+    {
+        $coupon_code = $request->coupon_code;
+        if (!isset($coupon_code)) {
+            return redirect()->back()->with('error', 'Please enter a coupon code!');
         }
 
-        $order->load('items.product');
-        return view('orders.show', compact('order'));
+        $coupon = Coupon::where('code', $coupon_code)->first();
+        
+        if (!$coupon) {
+            return redirect()->back()->with('error', 'Coupon code does not exist!');
+        }
+
+        if ($coupon->expiry_date < Carbon::today()) {
+            return redirect()->back()->with('error', 'This coupon has expired!');
+        }
+
+        // Convert cart subtotal to float for comparison
+        $cartSubtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
+        
+        if ($cartSubtotal < $coupon->cart_value) {
+            return redirect()->back()->with('error', 'Cart value must be at least $' . number_format($coupon->cart_value, 2) . ' to use this coupon!');
+        }
+
+        Session::put('coupon', [
+            'code' => $coupon->code,
+            'type' => $coupon->type,
+            'value' => $coupon->value,
+            'cart_value' => $coupon->cart_value
+        ]);
+        
+        $this->calculateDiscount();
+        return redirect()->back()->with('success', 'Coupon has been applied successfully!');
     }
 
-    public function store(Request $request)
+    public function calculateDiscount()
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string',
-            'mode' => 'required|in:card,gcash',
-            'reference_number' => 'required'
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            // Create order
-            $order = Order::create([
-                'user_id' => auth()->id(),
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'notes' => $request->notes,
-                'subtotal' => Cart::instance('cart')->subtotal(2, '.', ''),
-                'discount' => session()->has('coupon') ? session('discounts')['discount'] : 0,
-                'tax' => session()->has('coupon') ? session('discounts')['tax'] : Cart::instance('cart')->tax(2, '.', ''),
-                'total' => session()->has('coupon') ? session('discounts')['total'] : Cart::instance('cart')->total(2, '.', ''),
-                'status' => 'pending'
-            ]);
-
-            // Create order items
-            foreach(Cart::instance('cart')->content() as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->model->id,
-                    'name' => $item->name,
-                    'price' => $item->price,
-                    'quantity' => $item->qty,
-                    'subtotal' => $item->subtotal()
-                ]);
+        $discount = 0;
+        if(Session::has('coupon'))
+        {
+            if(Session::get('coupon')['type']=='fixed')
+            {
+                $discount = Session::get('coupon')['value'];
+            }
+            else{
+                $discount = (Cart::instance('cart')->subtotal() * Session::get('coupon')['value'])/100;
             }
 
-            // Create transaction record
-            Transaction::create([
-                'user_id' => auth()->id(),
-                'order_id' => $order->id,
-                'mode' => $request->mode,
-                'status' => 'pending',
+        $subtotalAfterDiscount =Cart::instance('cart')->subtotal() - $discount;
+            $taxAfterDiscount = ($subtotalAfterDiscount * config('cart.tax'))/100;
+            $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
+
+            Session::put('discounts',[
+                'discount' => number_format(floatval($discount),2,'.',''),
+                'subtotal' => number_format(floatval($subtotalAfterDiscount),2,'.',''),
+                'tax' => number_format(floatval($taxAfterDiscount),2,'.',''),
+                'total' => number_format(floatval($totalAfterDiscount),2,'.','')
             ]);
-
-            // Clear cart and coupon
-            Cart::instance('cart')->destroy();
-            session()->forget(['coupon', 'discounts']);
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'order_id' => $order->id
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create order'
-            ], 500);
         }
     }
-} 
+
+    public function remove_coupon_code(Request $request)
+    {
+        if(Session::has('coupon')) {
+            $oldCoupon = Session::get('coupon')['code'];
+            Session::forget('coupon');
+            Session::forget('discounts');
+            
+            // Recalculate cart totals without discount
+            $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
+            $tax = floatval(str_replace(',', '', Cart::instance('cart')->tax()));
+            $total = floatval(str_replace(',', '', Cart::instance('cart')->total()));
+            
+            return redirect()->route('cart.index')->with('success', "Coupon '{$oldCoupon}' has been removed successfully!");
+        }
+        return redirect()->route('cart.index')->with('error', 'No coupon to remove!');
+    }
+
+    public function checkout()
+    {
+        $items = Cart::instance('cart')->content();
+        $subtotal = Cart::instance('cart')->subtotal();
+        $tax = Cart::instance('cart')->tax();
+        $total = Cart::instance('cart')->total();
+        
+        $discount = 0;
+        $subtotalAfterDiscount = $subtotal;
+        $taxAfterDiscount = $tax;
+        $totalAfterDiscount = $total;
+
+        if(Session::has('discounts')) {
+            $discount = Session::get('discounts')['discount'];
+            $subtotalAfterDiscount = Session::get('discounts')['subtotal'];
+            $taxAfterDiscount = Session::get('discounts')['tax'];
+            $totalAfterDiscount = Session::get('discounts')['total'];
+        }
+
+        return view('checkout', compact('items', 'subtotal', 'tax', 'total', 'discount', 'subtotalAfterDiscount', 'taxAfterDiscount', 'totalAfterDiscount'));
+    }
+}    

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
@@ -13,26 +12,23 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'product_name',
+        'name',
         'price',
         'quantity',
-        'subtotal',
-        'color',
-        'size'
+        'subtotal'
     ];
 
-    /**
-     * Get the order that owns the item.
-     */
-    public function order(): BelongsTo
+    protected $casts = [
+        'price' => 'decimal:2',
+        'subtotal' => 'decimal:2'
+    ];
+
+    public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Get the product for this item.
-     */
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }

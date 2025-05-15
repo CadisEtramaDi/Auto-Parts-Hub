@@ -125,10 +125,8 @@
                 <div class="qty-control__reduce">-</div>
                 <div class="qty-control__increase">+</div>
               </div><!-- .qty-control -->
-              <input type="hidden" name="id" value="{{ $product->id }}"/>
-              <input type="hidden" name="name" value="{{ $product->name }}"/>
-              <input type="hidden" name="price" value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}"/>
-              <button type="submit" class="btn btn-primary btn-addtocart " data-aside="cartDrawer">Add to Cart</button>
+              <input type="hidden" name="product_id" value="{{ $product->id }}"/>
+              <button type="submit" class="btn btn-primary btn-addtocart" data-aside="cartDrawer">Add to Cart</button>
             </div>
           </form>
           @endif
@@ -266,7 +264,7 @@
             </div>
             <div class="product-single__review-form">
               <form name="customer-review-form">
-                <h5>Be the first to review “Message Cotton T-Shirt”</h5>
+                <h5>Be the first to review "Message Cotton T-Shirt"</h5>
                 <p>Your email address will not be published. Required fields are marked *</p>
                 <div class="select-star-rating">
                   <label>Your rating *</label>

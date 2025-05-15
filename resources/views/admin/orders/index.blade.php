@@ -1,150 +1,166 @@
 @extends('layouts.admin')
+
 @section('content')
-<div class="main-content-inner">
-    <div class="main-content-wrap">
-        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Orders</h3>
-            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                <li>
-                    <a href="{{ route('admin.index') }}">
-                        <div class="text-tiny">Dashboard</div>
-                    </a>
-                </li>
-                <li>
-                    <i class="icon-chevron-right"></i>
-                </li>
-                <li>
-                    <div class="text-tiny">Orders</div>
-                </li>
-            </ul>
-        </div>
-
-        <div class="wg-box">
-            <div class="flex items-center justify-between gap10 flex-wrap">
-                <div class="wg-filter flex-grow">
-                    <form class="form-search" action="{{ route('admin.orders.index') }}" method="GET">
-                        <fieldset class="name">
-                            <input type="text" placeholder="Search by order number or customer name..." 
-                                   class="" name="search" value="{{ request('search') }}">
-                        </fieldset>
-                        <div class="button-submit">
-                            <button class="" type="submit"><i class="icon-search"></i></button>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Orders Management</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Order Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Orders</h5>
+                                    <h3>{{ $totalOrders }}</h3>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="flex gap10">
-                    <select class="form-select" name="status" onchange="window.location.href=this.value">
-                        <option value="{{ route('admin.orders.index') }}" {{ !request('status') ? 'selected' : '' }}>All Orders</option>
-                        <option value="{{ route('admin.orders.index', ['status' => 'pending']) }}" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="{{ route('admin.orders.index', ['status' => 'processing']) }}" {{ request('status') === 'processing' ? 'selected' : '' }}>Processing</option>
-                        <option value="{{ route('admin.orders.index', ['status' => 'completed']) }}" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="{{ route('admin.orders.index', ['status' => 'cancelled']) }}" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                    </select>
-                </div>
-            </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Completed Orders</h5>
+                                    <h3>{{ $completedOrders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending</h5>
+                                    <h3>{{ $pendingOrders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Processing</h5>
+                                    <h3>{{ $processingOrders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Cancelled</h5>
+                                    <h3>{{ $cancelledOrders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="wg-table table-all-user">
-                <div class="table-responsive">
-                    @if(Session::has('status'))
-                        <p class="alert alert-success">{{ Session::get('status') }}</p>
-                    @endif
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px">Order No</th>
-                                <th>Customer</th>
-                                <th class="text-center">Items</th>
-                                <th class="text-center">Subtotal</th>
-                                <th class="text-center">Tax</th>
-                                <th class="text-center">Total</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Order Date</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($orders as $order)
-                            <tr>
-                                <td>#{{ $order->id }}</td>
-                                <td>
-                                    <div class="name">
-                                        <div class="body-title-2">{{ $order->user->name }}</div>
-                                        <div class="text-tiny mt-1">{{ $order->user->email }}</div>
-                                    </div>
-                                </td>
-                                <td class="text-center">{{ $order->items->count() }}</td>
-                                <td class="text-center">${{ number_format($order->subtotal, 2) }}</td>
-                                <td class="text-center">${{ number_format($order->tax, 2) }}</td>
-                                <td class="text-center">${{ number_format($order->total, 2) }}</td>
-                                <td class="text-center">
-                                    <select class="form-select form-select-sm status-select" 
-                                            data-order-id="{{ $order->id }}"
-                                            onchange="updateOrderStatus(this, {{ $order->id }})">
-                                        @foreach($statusOptions as $value => $label)
-                                            <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td class="text-center">{{ $order->created_at->format('M d, Y H:i') }}</td>
-                                <td class="text-center">
-                                    <div class="list-icon-function">
-                                        <a href="{{ route('admin.orders.show', $order) }}">
-                                            <div class="item eye">
-                                                <i class="icon-eye"></i>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="9" class="text-center">No orders found</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="divider"></div>
-                <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">
-                    {{ $orders->links('pagination::bootstrap-5') }}
+                    <!-- Orders Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Payment Method</th>
+                                    <th>Payment Status</th>
+                                    <th>Order Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($orders as $order)
+                                <tr>
+                                    <td>#{{ $order->id }}</td>
+                                    <td>{{ $order->user->name }}</td>
+                                    <td>{{ $order->items->count() }}</td>
+                                    <td>${{ number_format($order->total, 2) }}</td>
+                                    <td>{{ ucfirst($order->payment_method) }}</td>
+                                    <td>
+                                        @if($order->transaction)
+                                            <span class="badge bg-success">Paid</span>
+                                        @else
+                                            <span class="badge bg-warning">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $order->status == 'completed' ? 'success' : ($order->status == 'cancelled' ? 'danger' : ($order->status == 'processing' ? 'info' : 'warning')) }}">
+                                            {{ ucfirst($order->status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ route('admin.orders.show', $order->id) }}" 
+                                               class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-primary dropdown-toggle" 
+                                                    data-bs-toggle="dropdown">
+                                                Status
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="pending">
+                                                        <button type="submit" class="dropdown-item">Pending</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="processing">
+                                                        <button type="submit" class="dropdown-item">Processing</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="ready">
+                                                        <button type="submit" class="dropdown-item">Ready</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="completed">
+                                                        <button type="submit" class="dropdown-item">Completed</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="cancelled">
+                                                        <button type="submit" class="dropdown-item text-danger">Cancelled</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">No orders found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $orders->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
-
-@push('scripts')
-<script>
-function updateOrderStatus(select, orderId) {
-    const status = select.value;
-    fetch(`/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ status })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show success message
-            alert('Order status updated successfully');
-        } else {
-            // Show error message and revert selection
-            alert('Failed to update order status');
-            select.value = select.getAttribute('data-original-value');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while updating the order status');
-        select.value = select.getAttribute('data-original-value');
-    });
-}
-</script>
-@endpush 
+@endsection 

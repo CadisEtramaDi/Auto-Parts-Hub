@@ -8,44 +8,41 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\CouponController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Middleware\AuthAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
+Route::get('/shop/category/{slug}',[ShopController::class,'category'])->name('shop.category');
 Route::get('/shop/{product_slug}', [ShopController::class,'product_details'])->name('shop.product.details');
+Route::post('/shop/search', [ShopController::class,'search'])->name('shop.search');
 
 Route::get('/cart',[CartController::class,'index'])->name('cart.index');
 Route::post('/cart/add',[CartController::class,'add_to_cart'])->name('cart.add');
 Route::put('cart/increase-quantity/{rowId}',[CartController::class,'increase_cart_quantity'])->name('cart.qty.increase');
 Route::put('cart/decrease-quantity/{rowId}',[CartController::class,'decrease_cart_quantity'])->name('cart.qty.decrease');
-Route::delete('cart/remove/{rowId}', [CartController::class,'remove_item'])->name('cart.item.remove'); 
+Route::delete('cart/remove/{rowId}', [CartController::class,'remove_item'])->name('cart.item.remove');
 Route::delete('cart/clear', [CartController::class,'empty_cart'])->name('cart.empty');
 
 Route::post('/cart/apply-coupon',[CartController::class,'apply_coupon_code'])->name('cart.coupon.apply');
+Route::get('/cart/remove-coupon',[CartController::class,'remove_coupon_code'])->name('cart.coupon.remove');
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/account-dashboard', [Usercontroller::class, 'index'])->name('user.index');
-    Route::post('/cart/place-order', [CartController::class, 'placeOrder'])->name('cart.place.order');
-    
-    // User Order routes
-    Route::get('/my-orders', [App\Http\Controllers\UserOrderController::class, 'index'])->name('user.orders.index');
-    Route::get('/my-orders/{order}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('user.orders.show');
+    Route::get('/account/profile', [Usercontroller::class, 'profile'])->name('user.profile');
+    Route::post('/account/profile/update', [Usercontroller::class, 'updateProfile'])->name('user.profile.update');
+    Route::post('/account/contact/store', [Usercontroller::class, 'storeContact'])->name('user.contact.store');
+    Route::get('/my-orders', [App\Http\Controllers\UserController::class, 'orders'])->name('user.orders');
+    Route::get('/my-orders/{order}/receipt', [App\Http\Controllers\UserController::class, 'receipt'])->name('user.orders.receipt');
 });
-
 Route::middleware(['auth',AuthAdmin::class])->group(function(){
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    
-    // Admin Order Routes
-    Route::get('/admin/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
-    Route::get('/admin/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('/admin/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
-    
     Route::get('/admin/brands',[AdminController::class,'brands'])->name('admin.brands');
     Route::get('/admin/brand/add', [AdminController::class,'add_brand'])->name('admin.brand.add');
     Route::post('/admin/brand/store',[AdminController::class,'brand_store'])->name('admin.brand.store');
@@ -94,15 +91,32 @@ Route::middleware(['auth',AuthAdmin::class])->group(function(){
     Route::put('/admin/coupon/update', [AdminController::class, 'coupon_update'])->name('admin.coupon.update');
     Route::delete('/admin/coupon/{id}/delete', [AdminController::class, 'coupon_delete'])->name('admin.coupon.delete');
 
-    Route::get('/admin/add-auto-parts-categories', [AdminController::class, 'add_auto_parts_categories'])->name('admin.add.auto.parts.categories');
-    Route::get('/admin/add-auto-parts-products', [AdminController::class, 'add_auto_parts_products'])->name('admin.add.auto.parts.products');
+    // Admin Order Routes
+    Route::get('/admin/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
+    Route::put('/admin/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
+    Route::put('/admin/orders/{order}/payment-status', [App\Http\Controllers\Admin\OrderController::class, 'updatePaymentStatus'])->name('admin.orders.update-payment-status');
+    Route::get('/admin/orders/{order}/receipt', [App\Http\Controllers\Admin\OrderController::class, 'receipt'])->name('admin.orders.receipt');
 
-    // Add motor parts categories and products
-    Route::get('/admin/add-motor-parts', [App\Http\Controllers\Admin\MotorPartsController::class, 'addMotorPartsCategories'])->name('admin.add.motor.parts');
+    Route::get('/orders/{order}/receipt', [App\Http\Controllers\Admin\OrderController::class, 'receipt'])->name('orders.receipt');
 
-    Route::get('/admin/quick-add-motor-parts', [App\Http\Controllers\AdminController::class, 'quick_add_motor_parts'])->name('admin.quick_add_motor_parts');
 });
 
-// Cart & Checkout Routes
-Route::post('/confirm-order', [CheckoutController::class, 'confirmOrder'])->name('confirm-order');
-Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('place-order');
+// Checkout Routes
+Route::middleware(['auth'])->group(function () {
+    // Step 1: Show checkout form
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    
+    // Step 2: Show confirmation page
+    Route::get('/checkout/confirm', [CheckoutController::class, 'showConfirmation'])->name('checkout.confirm');
+    Route::post('/checkout/confirm', [CheckoutController::class, 'processConfirmation'])->name('checkout.process');
+    
+    // Step 3: Place order
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('place.order');
+    
+    // Step 4: Show success page
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    
+    // Orders list
+    Route::get('/orders', [App\Http\Controllers\UserController::class, 'orders'])->name('orders.index');
+});

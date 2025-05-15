@@ -243,7 +243,7 @@ class AdminController extends Controller
         {
             $image = $request->file('image');
             $imageName = $current_timestamp. '.'. $image->extension();
-            $this->GenerateProductThumbnailImage($image, $imageName);
+            $this->GenerateProductThumbnailImage($image, $imageName, $request->category_id);
             $product->image = $imageName;
         }
 
@@ -262,7 +262,7 @@ class AdminController extends Controller
                 if($gcheck)
                 {
                     $gfileName = $current_timestamp . "-" . $counter . ".". $gextension;
-                    $this->GenerateProductThumbnailImage($file, $gfileName);
+                    $this->GenerateProductThumbnailImage($file, $gfileName, $request->category_id);
                     array_push($gallery_arr,$gfileName);
                     $counter = $counter + 1;
                 }
@@ -274,10 +274,43 @@ class AdminController extends Controller
         return redirect()->route('admin.products')->with('status','Product has been added successfully!');
     }
 
-    public function GenerateProductThumbnailImage($image, $imageName)
+    public function GenerateProductThumbnailImage($image, $imageName, $categoryId = null)
     {
+        // Default paths (fallback)
         $destinationPathThumbnail = public_path('uploads/products/thumbnails');
         $destinationPath = public_path('uploads/products');
+        
+        // If category ID is provided, determine the appropriate folder
+        if ($categoryId) {
+            $category = Category::find($categoryId);
+            if ($category) {
+                $parentCategory = $category->parent;
+                
+                if ($parentCategory) {
+                    if ($parentCategory->slug == 'motor-parts') {
+                        // Motor Parts category
+                        $categoryFolder = str_replace('-', ' ', ucwords($category->slug, '-'));
+                        $destinationPath = public_path('images/Motor Parts/' . $categoryFolder);
+                        $destinationPathThumbnail = public_path('images/Motor Parts/' . $categoryFolder . '/thumbnails');
+                    } elseif ($parentCategory->slug == 'vehicle-systems') {
+                        // Vehicle System category
+                        $categoryFolder = str_replace('-', ' ', ucwords($category->slug, '-'));
+                        $destinationPath = public_path('images/Vehicle System/' . $categoryFolder);
+                        $destinationPathThumbnail = public_path('images/Vehicle System/' . $categoryFolder . '/thumbnails');
+                    }
+                }
+            }
+        }
+        
+        // Create directories if they don't exist
+        if (!File::isDirectory($destinationPath)) {
+            File::makeDirectory($destinationPath, 0755, true);
+        }
+        
+        if (!File::isDirectory($destinationPathThumbnail)) {
+            File::makeDirectory($destinationPathThumbnail, 0755, true);
+        }
+        
         $img = Image::read($image->path());
         
         $img->cover(540,689,"top");
@@ -335,17 +368,9 @@ class AdminController extends Controller
 
         if($request->hasFile('image'))
         {
-            if(File::exists(public_path('uploads/products').'/'.$product->image))
-            {
-                File::delete(public_path('uploads/products').'/'.$product->image);
-            }
-            if(File::exists(public_path('uploads/products/thumbnails').'/'.$product->image))
-            {
-                File::delete(public_path('uploads/products/thumbnails').'/'.$product->image);
-            }
             $image = $request->file('image');
             $imageName = $current_timestamp. '.'. $image->extension();
-            $this->GenerateProductThumbnailImage($image, $imageName);
+            $this->GenerateProductThumbnailImage($image, $imageName, $request->category_id);
             $product->image = $imageName;
         }
 
@@ -375,7 +400,7 @@ class AdminController extends Controller
                 if($gcheck)
                 {
                     $gfileName = $current_timestamp . "-" . $counter . ".". $gextension;
-                    $this->GenerateProductThumbnailImage($file, $gfileName);
+                    $this->GenerateProductThumbnailImage($file, $gfileName, $request->category_id);
                     array_push($gallery_arr,$gfileName);
                     $counter = $counter + 1;
                 }

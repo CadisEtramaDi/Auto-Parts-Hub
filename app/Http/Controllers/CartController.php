@@ -203,4 +203,15 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function remove_coupon_code()
+    {
+        if (Session::has('coupon')) {
+            $oldCoupon = Session::get('coupon')['code'];
+            Session::forget('coupon');
+            Session::forget('discounts');
+            return redirect()->route('cart.index')->with('success', "Coupon '{$oldCoupon}' has been removed successfully!");
+        }
+        return redirect()->route('cart.index')->with('error', 'No coupon to remove!');
+    }
 }    
