@@ -99,7 +99,7 @@
                             @csrf
                             <button type="submit" class="btn btn-primary">Confirm Order</button>
                         </form>
-                        <a href="{{ route('checkout') }}" class="btn btn-outline-secondary ms-2">Edit Order</a>
+                        <a href="{{ route('cart.index') }}" class="btn btn-secondary ms-2">Edit Order</a>
                     </div>
                 </div>
             </div>

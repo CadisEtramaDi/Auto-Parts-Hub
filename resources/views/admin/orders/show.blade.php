@@ -65,7 +65,7 @@
                         <div class="card-body">
                             <h6 class="card-title">Customer Information</h6>
                             <div class="mb-2">
-                                <strong>Name:</strong> {{ $order->name }}
+                                <strong>Customer Name:</strong> {{ $order->name }}
                             </div>
                             <div class="mb-2">
                                 <strong>Email:</strong> {{ $order->user->email }}

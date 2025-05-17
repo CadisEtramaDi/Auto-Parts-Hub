@@ -52,8 +52,8 @@
                     <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
                     <div class="upload-image flex-grow">
                         <div class="item" id="imgpreview" style="display:none">                            
-                            <img src="{{asset('images/upload/upload-1.png')}}" class="effect8" alt="">
-                        </div>
+                            <img src="{{asset('images/uploads/uploads-1.png')}}" class="effect8" alt="">
+                        </div>  
                         <div id="upload-file" class="item up-load">
                             <label class="uploadfile" for="myFile">
                                 <span class="icon">
@@ -82,12 +82,12 @@
 @push("scripts")
     <script>
             $(function(){
-                $("#myFile").on("change",function(e){
-                    const photoInp = $("#myFile");                    
+                $("#myFile").on("change", function(e){
+                    console.log("File input changed");
                     const [file] = this.files;
                     if (file) {
-                        $("#imgpreview img").attr('src',URL.createObjectURL(file));
-                        $("#imgpreview").show();                        
+                        $("#imgpreview img").attr('src', URL.createObjectURL(file));
+                        $("#imgpreview").show();
                     }
                 });
                 $("input[name='name']").on("change",function(){

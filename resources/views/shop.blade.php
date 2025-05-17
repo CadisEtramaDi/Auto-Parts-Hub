@@ -16,6 +16,24 @@
   .filled-heart{
     color: orange;
   }
+  .product-img {
+    width: 100%;
+    height: 330px; /* match your card height */
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .pc__img-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1.2;
+    max-width: 330px;
+    max-height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+  }
   </style>
 <main class="pt-90">
     <section class="shop-main container d-flex pt-4 pt-xl-5">
@@ -302,8 +320,8 @@
                           }
                         }
                       @endphp
-                      <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($imagePath . $product->image) }}" width="330"
-                          height="400" alt="{{ $product->name }}" class="pc__img"></a>
+                      <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset('uploads/products/thumbnails/' . $product->image) }}" width="330"
+                          height="400" alt="{{ $product->name }}" class="pc__img product-img"></a>
                     </div>
                     <div class="swiper-slide">
                         @foreach (explode(",",$product->images) as $gimg)
@@ -326,8 +344,8 @@
                               }
                             }
                           @endphp
-                          <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($imagePath . $gimg) }}"
-                              width="330" height="400" alt="{{ $product->name }}" class="pc__img"></a>
+                          <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset('uploads/products/thumbnails/' . $gimg) }}"
+                              width="330" height="400" alt="{{ $product->name }}" class="pc__img product-img"></a>
                           @endforeach
                     </div>
                   </div>
@@ -355,7 +373,7 @@
               </div>
 
               <div class="pc__info position-relative">
-                <p class="pc__category">{{$product->category->name}}</p>
+                <p class="pc__category">{{ $product->category->name ?? 'Uncategorized' }}</p>
                 <h6 class="pc__title"><a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}">{{$product->name}}</a></h6>
                 <div class="product-card__price d-flex">
                   <span class="money price">

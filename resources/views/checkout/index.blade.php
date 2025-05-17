@@ -14,7 +14,7 @@
         </div>
         <div class="step active">
             <div class="step-number">02</div>
-            <div class="step-title">SHIPPING AND CHECKOUT</div>
+            <div class="step-title">CHECKOUT</div>
             <div class="step-subtitle">Checkout Your Items List</div>
             <div class="step-line"></div>
         </div>
@@ -45,7 +45,7 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Full Name *</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                       name="name" value="{{ old('name', $user->name) }}" required>
+                                       name="name" value="{{ old('name', $checkoutData['name'] ?? $user->name) }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -53,7 +53,7 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Phone Number *</label>
                                 <input type="tel" class="form-control @error('phone') is-invalid @enderror" 
-                                       name="phone" value="{{ old('phone', $user->phone) }}" required>
+                                       name="phone" value="{{ old('phone', $checkoutData['phone'] ?? $user->phone) }}" required>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -64,7 +64,7 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Pickup Date *</label>
                                 <input type="date" class="form-control @error('pickup_date') is-invalid @enderror" 
-                                       name="pickup_date" value="{{ old('pickup_date', date('Y-m-d')) }}" required>
+                                       name="pickup_date" value="{{ old('pickup_date', $checkoutData['pickup_date'] ?? date('Y-m-d')) }}" required>
                                 @error('pickup_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -74,13 +74,13 @@
                                 <select class="form-select @error('pickup_time') is-invalid @enderror" 
                                         name="pickup_time" required>
                                     <option value="">Select a time slot</option>
-                                    <option value="09:00" {{ old('pickup_time') == '09:00' ? 'selected' : '' }}>9:00 AM</option>
-                                    <option value="10:00" {{ old('pickup_time') == '10:00' ? 'selected' : '' }}>10:00 AM</option>
-                                    <option value="11:00" {{ old('pickup_time') == '11:00' ? 'selected' : '' }}>11:00 AM</option>
-                                    <option value="13:00" {{ old('pickup_time') == '13:00' ? 'selected' : '' }}>1:00 PM</option>
-                                    <option value="14:00" {{ old('pickup_time') == '14:00' ? 'selected' : '' }}>2:00 PM</option>
-                                    <option value="15:00" {{ old('pickup_time') == '15:00' ? 'selected' : '' }}>3:00 PM</option>
-                                    <option value="16:00" {{ old('pickup_time') == '16:00' ? 'selected' : '' }}>4:00 PM</option>
+                                    <option value="09:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '09:00' ? 'selected' : '' }}>9:00 AM</option>
+                                    <option value="10:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '10:00' ? 'selected' : '' }}>10:00 AM</option>
+                                    <option value="11:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '11:00' ? 'selected' : '' }}>11:00 AM</option>
+                                    <option value="13:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '13:00' ? 'selected' : '' }}>1:00 PM</option>
+                                    <option value="14:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '14:00' ? 'selected' : '' }}>2:00 PM</option>
+                                    <option value="15:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '15:00' ? 'selected' : '' }}>3:00 PM</option>
+                                    <option value="16:00" {{ old('pickup_time', $checkoutData['pickup_time'] ?? '') == '16:00' ? 'selected' : '' }}>4:00 PM</option>
                                 </select>
                                 @error('pickup_time')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -91,7 +91,7 @@
                         <div class="mb-4">
                             <label class="form-label">Special Instructions</label>
                             <textarea class="form-control @error('special_instructions') is-invalid @enderror" 
-                                      name="special_instructions" rows="3">{{ old('special_instructions') }}</textarea>
+                                      name="special_instructions" rows="3">{{ old('special_instructions', $checkoutData['special_instructions'] ?? '') }}</textarea>
                             @error('special_instructions')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -101,7 +101,7 @@
                             <h5 class="mb-3">PAYMENT METHOD</h5>
                             <div class="payment-method">
                                 <input type="radio" name="payment_method" id="cash" value="cash" 
-                                       {{ old('payment_method', 'cash') == 'cash' ? 'checked' : '' }}>
+                                       {{ old('payment_method', $checkoutData['payment_method'] ?? 'cash') == 'cash' ? 'checked' : '' }}>
                                 <label for="cash">
                                     <span class="method-title">Cash</span>
                                     <span class="method-description">
@@ -111,7 +111,7 @@
                             </div>
                             <div class="payment-method">
                                 <input type="radio" name="payment_method" id="gcash" value="gcash"
-                                       {{ old('payment_method') == 'gcash' ? 'checked' : '' }}>
+                                       {{ old('payment_method', $checkoutData['payment_method'] ?? '') == 'gcash' ? 'checked' : '' }}>
                                 <label for="gcash">
                                     <span class="method-title">GCash</span>
                                     <span class="method-description">
@@ -121,7 +121,7 @@
                             </div>
                             <div class="payment-method">
                                 <input type="radio" name="payment_method" id="card" value="card"
-                                       {{ old('payment_method') == 'card' ? 'checked' : '' }}>
+                                       {{ old('payment_method', $checkoutData['payment_method'] ?? '') == 'card' ? 'checked' : '' }}>
                                 <label for="card">
                                     <span class="method-title">Card</span>
                                     <span class="method-description">
@@ -138,14 +138,14 @@
                         <div id="gcash-fields" style="display: none;">
                             <div class="mb-3">
                                 <label for="gcash_name" class="form-label">GCash Account Name</label>
-                                <input type="text" class="form-control @error('gcash_name') is-invalid @enderror" name="gcash_name" id="gcash_name" value="{{ old('gcash_name') }}">
+                                <input type="text" class="form-control @error('gcash_name') is-invalid @enderror" name="gcash_name" id="gcash_name" value="{{ old('gcash_name', $checkoutData['gcash_name'] ?? '') }}">
                                 @error('gcash_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="gcash_phone" class="form-label">GCash Phone Number</label>
-                                <input type="text" class="form-control @error('gcash_phone') is-invalid @enderror" name="gcash_phone" id="gcash_phone" value="{{ old('gcash_phone') }}">
+                                <input type="text" class="form-control @error('gcash_phone') is-invalid @enderror" name="gcash_phone" id="gcash_phone" value="{{ old('gcash_phone', $checkoutData['gcash_phone'] ?? '') }}">
                                 @error('gcash_phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -156,14 +156,14 @@
                         <div id="card-fields" style="display: none;">
                             <div class="mb-3">
                                 <label for="card_name" class="form-label">Cardholder Name</label>
-                                <input type="text" class="form-control @error('card_name') is-invalid @enderror" name="card_name" id="card_name" value="{{ old('card_name') }}">
+                                <input type="text" class="form-control @error('card_name') is-invalid @enderror" name="card_name" id="card_name" value="{{ old('card_name', $checkoutData['card_name'] ?? '') }}">
                                 @error('card_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="card_number" class="form-label">Card Number</label>
-                                <input type="text" class="form-control @error('card_number') is-invalid @enderror" name="card_number" id="card_number" value="{{ old('card_number') }}" maxlength="16" pattern="\d{16}">
+                                <input type="text" class="form-control @error('card_number') is-invalid @enderror" name="card_number" id="card_number" value="{{ old('card_number', $checkoutData['card_number'] ?? '') }}" maxlength="16" pattern="\d{16}">
                                 @error('card_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

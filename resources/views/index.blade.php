@@ -14,8 +14,8 @@
         <div class="swiper-slide">
           <div class="overflow-hidden position-relative h-100">
             <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-              <img loading="lazy" src="{{asset('assets/images/home/demo3/slideshow-character1.png')}}" width="542" height="733"
-                alt="Woman Fashion 1"
+              <img loading="lazy" src="{{asset('assets/images/images/home/demo3/slideshow-character1.png')}}" width="542" height="733"
+                alt="Slide 1"
                 class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-auto h-auto" />
           
             </div>
@@ -34,10 +34,10 @@
         <div class="swiper-slide">
           <div class="overflow-hidden position-relative h-100">
             <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-              <img loading="lazy" src="{{asset('assets/images/slideshow-character1.png')}}" width="400" height="733"
-                alt="Woman Fashion 1"
+              <img loading="lazy" src="{{asset('assets/images/images/home/demo3/slideshow-character2.png')}}" width="400" height="733"
+                alt="Slide 2"
                 class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-auto h-auto" />
-              
+          
             </div>
             <div class="slideshow-text container position-absolute start-50 top-50 translate-middle">
               <h6 class="text_dash text-uppercase fs-base fw-medium animate animate_fade animate_btt animate_delay-3">
@@ -54,8 +54,8 @@
         <div class="swiper-slide">
           <div class="overflow-hidden position-relative h-100">
             <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-              <img loading="lazy" src="{{asset('assets/images/slideshow-character2.png')}}" width="400" height="690"
-                alt="Woman Fashion 2"
+              <img loading="lazy" src="{{asset('assets/images/images/home/demo3/slideshow-character1.png')}}" width="400" height="690"
+                alt="Slide 3"
                 class="slideshow-character__img animate animate_fade animate_rtl animate_delay-10 w-auto h-auto" />
             </div>
             <div class="slideshow-text container position-absolute start-50 top-50 translate-middle">
@@ -77,6 +77,7 @@
         </div>
       </div>
     </section>
+
     <div class="container mw-1620 bg-white border-radius-10">
       <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 
@@ -156,19 +157,17 @@
                       <div class="slideshow-character position-absolute top-0 end-0 w-100 h-100 d-flex justify-content-center align-items-center">
                         @php
                           $categorySlug = $product->category ? $product->category->slug : '';
-                          $imagePath = 'assets/images/categories/';
-                          
-                          // Map category slugs to available image files
+                          $imagePath = 'assets/images/images/home/demo3/';
                           switch($categorySlug) {
+                              case 'brake-system':
+                                $imagePath .= 'slideshow-character1.png';
+                                break;
+                              case 'engine-parts':
+                                $imagePath .= 'slideshow-character2.png';
+                                break;
                               case 'electrical-components':
                               case 'electrical-system':
                                 $imagePath .= 'electrical.jpg';
-                                break;
-                              case 'brake-system':
-                                $imagePath .= 'brake.jpg';
-                                break;
-                              case 'engine-parts':
-                                $imagePath .= 'engine.jpg';
                                 break;
                               case 'cooling-components':
                               case 'cooling-system':
@@ -187,7 +186,7 @@
                                 $imagePath .= 'exhaust.jpg';
                                 break;
                               default:
-                                $imagePath .= 'brake.jpg'; // Default image if no match
+                                $imagePath .= 'slideshow-character1.png';
                           }
                         @endphp
                         <img loading="lazy" src="{{ asset($imagePath) }}" width="350" height="350"
@@ -220,8 +219,7 @@
         <div class="row">
           <div class="col-md-6">
             <div class="category-banner__item border-radius-10 mb-5">
-              <img loading="lazy" class="h-auto w-100" src="{{asset('assets/images/banners/engine-parts-banner.jpg')}}" width="690" height="665"
-                alt="Engine Parts" />
+              <img loading="lazy" class="h-auto w-100" src="{{ asset('assets/images/images/home/demo3/slideshow-character1.png') }}" width="690" height="665" alt="Engine Parts" />
               <div class="category-banner__item-mark">
                 Starting at $199
               </div>
@@ -234,8 +232,7 @@
           </div>
           <div class="col-md-6">
             <div class="category-banner__item border-radius-10 mb-5">
-              <img loading="lazy" class="h-auto w-100" src="{{asset('assets/images/categories/brake.jpg')}}" width="690" height="665"
-                alt="Brake System" />
+              <img loading="lazy" class="h-auto w-100" src="{{ asset('assets/images/images/home/demo3/slideshow-character2.png') }}" width="690" height="665" alt="Brake System" />
               <div class="category-banner__item-mark">
                 Starting at $79
               </div>
@@ -315,182 +312,31 @@
 
     <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 
-    <!-- Featured Products Section -->
-    <section class="featured-products container">
-      <h2 class="section-title text-center mb-4">Featured Products</h2>
-      <div class="row g-4">
-        @foreach($featuredProducts as $product)
-        <div class="col-6 col-md-4 col-lg-3">
-          <div class="product-card h-100 border-radius-10 p-3 bg-white shadow-sm hover-shadow transition-all">
-            <div class="position-relative mb-3">
-              <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" class="d-block">
-                <img loading="lazy" src="{{ asset('images') }}/{{ $product->image }}" 
-                     class="img-fluid rounded product-img" 
-                     alt="{{ $product->name }}"
-                     style="width: 100%; height: 200px; object-fit: cover;">
-              </a>
-              @if($product->sale_price)
-              <div class="position-absolute top-0 end-0 m-2">
-                <span class="badge bg-danger px-2 py-1">Sale</span>
-              </div>
-              @endif
-              <div class="position-absolute bottom-0 start-0 m-2">
-                <span class="badge bg-primary px-2 py-1">{{ $product->category->name }}</span>
-              </div>
-            </div>
-
-            <div class="product-details">
-              <h5 class="product-title mb-2">
-                <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" 
-                   class="text-dark text-decoration-none">{{ $product->name }}</a>
-              </h5>
-              
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="product-price">
-                @if($product->sale_price)
-                  <span class="text-muted text-decoration-line-through me-2">${{ number_format($product->regular_price, 2) }}</span>
-                  <span class="text-danger fw-bold">${{ number_format($product->sale_price, 2) }}</span>
-                  @else
-                  <span class="text-dark fw-bold">${{ number_format($product->regular_price, 2) }}</span>
-                  @endif
+    <section class="container my-5">
+        <h2 class="section-title text-center mb-4">Featured Products</h2>
+        <div class="demo3-gallery d-flex flex-wrap gap-3 justify-content-center">
+            @foreach($demo3Images as $img)
+                <div class="product-card h-100 border-radius-10 p-3 bg-white shadow-sm hover-shadow transition-all" style="width: 200px;">
+                    <div class="position-relative mb-3">
+                        <img src="{{ asset('assets/images/' . $img) }}" alt="{{ basename($img) }}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                    </div>
+                    <div class="product-details text-center">
+                        <h5 class="product-title mb-2">{{ basename($img) }}</h5>
+                        <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="demo3-{{ basename($img) }}">
+                            <input type="hidden" name="name" value="{{ basename($img) }}">
+                            <input type="hidden" name="price" value="9.99">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="stock-status">
-                  @if($product->stock_status == 'instock')
-                  <span class="badge bg-success">In Stock</span>
-                @else
-                  <span class="badge bg-danger">Out of Stock</span>
-                @endif
-                </div>
-              </div>
-
-              <div class="product-actions d-flex gap-2">
-              @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
-                  <a href="{{ route('cart.index') }}" 
-                     class="btn btn-primary w-100">
-                     <i class="fas fa-shopping-cart me-1"></i> View Cart
-                  </a>
-              @else
-                  <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                  @csrf
-                  <input type="hidden" name="id" value="{{ $product->id }}">
-                  <input type="hidden" name="name" value="{{ $product->name }}">
-                  <input type="hidden" name="price" value="{{ $product->sale_price ?: $product->regular_price }}">
-                  <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-primary w-100">
-                      <i class="fas fa-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </form>
-              @endif
-                <button class="btn btn-outline-primary flex-shrink-0" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#quickView" 
-                        title="Quick view">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+            @endforeach
         </div>
-        @endforeach
-      </div>
-
-      <div class="text-center mt-5">
-        <a href="{{ route('shop.index') }}" 
-           class="btn btn-outline-primary btn-lg px-4">
-          View All Products <i class="fas fa-arrow-right ms-2"></i>
-        </a>
-      </div>
-    </section>
-
-    <!-- New Arrivals Section -->
-    <section class="new-arrivals container mt-5 mb-5">
-      <h2 class="section-title text-center mb-4">New Arrivals</h2>
-      <div class="row g-4">
-        @foreach($newArrivals as $product)
-        <div class="col-6 col-md-4 col-lg-3">
-          <div class="product-card h-100 border-radius-10 p-3 bg-white shadow-sm hover-shadow transition-all">
-            <div class="position-relative mb-3">
-              <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" class="d-block">
-                <img loading="lazy" src="{{ asset('images') }}/{{ $product->image }}" 
-                     class="img-fluid rounded product-img" 
-                     alt="{{ $product->name }}"
-                     style="width: 100%; height: 200px; object-fit: cover;">
-              </a>
-              @if($product->sale_price)
-              <div class="position-absolute top-0 end-0 m-2">
-                <span class="badge bg-danger px-2 py-1">Sale</span>
-              </div>
-              @endif
-              <div class="position-absolute top-0 start-0 m-2">
-                <span class="badge bg-info px-2 py-1">New</span>
-              </div>
-              <div class="position-absolute bottom-0 start-0 m-2">
-                <span class="badge bg-primary px-2 py-1">{{ $product->category->name }}</span>
-              </div>
-            </div>
-
-            <div class="product-details">
-              <h5 class="product-title mb-2">
-                <a href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}" 
-                   class="text-dark text-decoration-none">{{ $product->name }}</a>
-              </h5>
-              
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="product-price">
-                @if($product->sale_price)
-                  <span class="text-muted text-decoration-line-through me-2">${{ number_format($product->regular_price, 2) }}</span>
-                  <span class="text-danger fw-bold">${{ number_format($product->sale_price, 2) }}</span>
-                  @else
-                  <span class="text-dark fw-bold">${{ number_format($product->regular_price, 2) }}</span>
-                  @endif
-                </div>
-                <div class="stock-status">
-                  @if($product->stock_status == 'instock')
-                  <span class="badge bg-success">In Stock</span>
-                @else
-                  <span class="badge bg-danger">Out of Stock</span>
-                @endif
-                </div>
-              </div>
-
-              <div class="product-actions d-flex gap-2">
-              @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
-                  <a href="{{ route('cart.index') }}" 
-                     class="btn btn-primary w-100">
-                     <i class="fas fa-shopping-cart me-1"></i> View Cart
-                  </a>
-              @else
-                  <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                  @csrf
-                  <input type="hidden" name="id" value="{{ $product->id }}">
-                  <input type="hidden" name="name" value="{{ $product->name }}">
-                  <input type="hidden" name="price" value="{{ $product->sale_price ?: $product->regular_price }}">
-                  <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-primary w-100">
-                      <i class="fas fa-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </form>
-              @endif
-                <button class="btn btn-outline-primary flex-shrink-0" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#quickView" 
-                        title="Quick view">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        @endforeach
-      </div>
-
-      <div class="text-center mt-5">
-        <a href="{{ route('shop.index') }}" 
-           class="btn btn-outline-primary btn-lg px-4">
-          Browse All New Arrivals <i class="fas fa-arrow-right ms-2"></i>
-        </a>
-      </div>
     </section>
 
   </main>
-@endsection~
+@endsection

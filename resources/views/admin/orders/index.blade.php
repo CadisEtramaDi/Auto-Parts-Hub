@@ -1,162 +1,108 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container py-4">
+<div class="container-fluid py-4">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Orders Management</h4>
                 </div>
                 <div class="card-body">
-                    <!-- Order Statistics -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card bg-info text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title">Total Orders</h5>
-                                    <h3>{{ $totalOrders }}</h3>
+                    <div class="main-content-inner">
+                        <div class="main-content-wrap">
+                            <h3 class="mb-4">Orders Management</h3>
+                            <div class="row mb-4">
+                                <div class="col-md-2">
+                                    <div class="card shadow-sm border-0 rounded-3 text-center py-3" style="background:#fff;">
+                                        <div class="fw-bold text-secondary">Total Orders</div>
+                                        <div class="fs-3 fw-bold">{{ $totalOrders }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="card shadow-sm border-0 rounded-3 text-center py-3" style="background:#fff;">
+                                        <div class="fw-bold text-secondary">Completed Orders</div>
+                                        <div class="fs-3 fw-bold">{{ $completedOrders }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="card shadow-sm border-0 rounded-3 text-center py-3" style="background:#fff;">
+                                        <div class="fw-bold text-secondary">Pending</div>
+                                        <div class="fs-3 fw-bold">{{ $pendingOrders }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="card shadow-sm border-0 rounded-3 text-center py-3" style="background:#fff;">
+                                        <div class="fw-bold text-secondary">Processing</div>
+                                        <div class="fs-3 fw-bold">{{ $processingOrders }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="card shadow-sm border-0 rounded-3 text-center py-3" style="background:#fff;">
+                                        <div class="fw-bold text-secondary">Cancelled</div>
+                                        <div class="fs-3 fw-bold">{{ $cancelledOrders }}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-success text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title">Completed Orders</h5>
-                                    <h3>{{ $completedOrders }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card bg-warning text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title">Pending</h5>
-                                    <h3>{{ $pendingOrders }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card bg-primary text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title">Processing</h5>
-                                    <h3>{{ $processingOrders }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card bg-danger text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title">Cancelled</h5>
-                                    <h3>{{ $cancelledOrders }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Orders Table -->
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Items</th>
-                                    <th>Total</th>
-                                    <th>Payment Method</th>
-                                    <th>Payment Status</th>
-                                    <th>Order Status</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($orders as $order)
-                                <tr>
-                                    <td>#{{ $order->id }}</td>
-                                    <td>{{ $order->user->name }}</td>
-                                    <td>{{ $order->items->count() }}</td>
-                                    <td>${{ number_format($order->total, 2) }}</td>
-                                    <td>{{ ucfirst($order->payment_method) }}</td>
-                                    <td>
-                                        @if($order->transaction)
-                                            <span class="badge bg-success">Paid</span>
-                                        @else
-                                            <span class="badge bg-warning">Pending</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ $order->status == 'completed' ? 'success' : ($order->status == 'cancelled' ? 'danger' : ($order->status == 'processing' ? 'info' : 'warning')) }}">
-                                            {{ ucfirst($order->status) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="{{ route('admin.orders.show', $order->id) }}" 
-                                               class="btn btn-sm btn-info">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-primary dropdown-toggle" 
-                                                    data-bs-toggle="dropdown">
-                                                Status
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="pending">
-                                                        <button type="submit" class="dropdown-item">Pending</button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="processing">
-                                                        <button type="submit" class="dropdown-item">Processing</button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="ready">
-                                                        <button type="submit" class="dropdown-item">Ready</button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="completed">
-                                                        <button type="submit" class="dropdown-item">Completed</button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="cancelled">
-                                                        <button type="submit" class="dropdown-item text-danger">Cancelled</button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="9" class="text-center">No orders found.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $orders->links() }}
+                            <!-- Orders Table -->
+                            <div class="wg-box">
+                                <div class="flex items-center justify-between gap10 flex-wrap">
+                                    <div class="wg-filter flex-grow">
+                                        <form class="form-search">
+                                            <fieldset class="name">
+                                                <input type="text" placeholder="Search here..." class="" name="search" tabindex="2" value="" aria-required="true">
+                                            </fieldset>
+                                            <div class="button-submit">
+                                                <button class="" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Customer</th>
+                                                <th>Items</th>
+                                                <th>Total</th>
+                                                <th>Payment Method</th>
+                                                <th>Payment Status</th>
+                                                <th>Order Status</th>
+                                                <th>Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($orders as $order)
+                                            <tr>
+                                                <td>#{{ $order->id }}</td>
+                                                <td>{{ $order->name }}</td>
+                                                <td>{{ $order->items->count() }}</td>
+                                                <td>${{ number_format($order->total, 2) }}</td>
+                                                <td>{{ ucfirst($order->payment_method) }}</td>
+                                                <td>{{ $order->transaction ? 'Paid' : 'Pending' }}</td>
+                                                <td>{{ ucfirst($order->status) }}</td>
+                                                <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                                <td>
+                                                    <a href="{{ route('admin.orders.show', $order->id) }}" target="_blank" class="btn btn-outline-info btn-lg px-4 py-2">
+                                                        <i class="icon-eye" style="font-size: 1.5rem;"></i> <span class="fw-bold">View</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="9" class="text-center">No orders found.</td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">
+                                    {{ $orders->links('pagination::bootstrap-5') }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

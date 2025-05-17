@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ShopController extends Controller
 {
@@ -46,13 +47,21 @@ class ShopController extends Controller
         
         // Get all selected category IDs (both parent and child)
         $selectedCategoryIds = $f_categories ? explode(',', $f_categories) : [];
-        
+        $allCategoryIds = $selectedCategoryIds;
+        if (!empty($selectedCategoryIds)) {
+            // Recursively get all descendant IDs
+            $descendantIds = collect();
+            foreach ($selectedCategoryIds as $catId) {
+                $descendantIds = $descendantIds->merge($this->getAllDescendantCategoryIds($categories, $catId));
+            }
+            $allCategoryIds = array_unique(array_merge($selectedCategoryIds, $descendantIds->all()));
+        }
         $products = Product::where(function($query) use($f_brands){
             $query->whereIn('brand_id',explode(',',$f_brands))->orWhereRaw("'".$f_brands."'=''");
         })
-        ->where(function($query) use($selectedCategoryIds){
-            if (!empty($selectedCategoryIds)) {
-                $query->whereIn('category_id', $selectedCategoryIds);
+        ->where(function($query) use($allCategoryIds){
+            if (!empty($allCategoryIds)) {
+                $query->whereIn('category_id', $allCategoryIds);
             }
         })
         ->where(function($query) use($min_price,$max_price){
@@ -63,6 +72,19 @@ class ShopController extends Controller
         ->paginate($size);
 
         return view('shop',compact('products','size','order','brands','f_brands','categories','f_categories','min_price','max_price'));
+    }
+
+    // Helper to get all descendant category IDs
+    private function getAllDescendantCategoryIds($categories, $parentId)
+    {
+        $ids = collect();
+        foreach ($categories as $category) {
+            if ($category->parent_id == $parentId) {
+                $ids->push($category->id);
+                $ids = $ids->merge($this->getAllDescendantCategoryIds($categories, $category->id));
+            }
+        }
+        return $ids;
     }
 
     public function product_details($product_slug)

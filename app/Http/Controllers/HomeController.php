@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -29,6 +30,14 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('index', compact('featuredProducts', 'newArrivals', 'carouselProducts'));
+        // Dynamically get all images from public/images/home/demo3
+        $demo3Images = collect(File::files(public_path('images/home/demo3')))
+            ->map(function ($file) {
+                return 'images/home/demo3/' . $file->getFilename();
+            });
+
+        $allProducts = Product::all();
+
+        return view('index', compact('featuredProducts', 'newArrivals', 'carouselProducts', 'demo3Images', 'allProducts'));
     }
 }

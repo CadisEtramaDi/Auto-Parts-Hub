@@ -48,7 +48,7 @@ class CheckoutController extends Controller
 
         $cartItems = CartFacade::instance('cart')->content();
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty');
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
         return view('checkout.confirmation', [
@@ -85,14 +85,14 @@ class CheckoutController extends Controller
 
         $cartItems = CartFacade::instance('cart')->content();
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty');
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
         // Check stock availability
         foreach ($cartItems as $item) {
             $product = Product::find($item->id);
             if (!$product || $product->quantity < $item->qty) {
-                return redirect()->route('cart')->with('error', 'Some items in your cart are no longer available');
+                return redirect()->route('cart.index')->with('error', 'Some items in your cart are no longer available');
             }
         }
 
@@ -113,7 +113,7 @@ class CheckoutController extends Controller
 
         $cartItems = CartFacade::instance('cart')->content();
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty');
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
         Log::info('Checkout data', ['checkoutData' => $checkoutData, 'cartItems' => $cartItems]);
@@ -148,6 +148,7 @@ class CheckoutController extends Controller
                 $order->items()->create([
                     'product_id' => $item->id,
                     'name' => $item->name,
+                    'price' => $item->price,
                     'unit_price' => $item->price,
                     'quantity' => $item->qty,
                     'subtotal' => $item->price * $item->qty

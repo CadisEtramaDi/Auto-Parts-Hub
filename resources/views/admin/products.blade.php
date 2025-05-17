@@ -71,7 +71,7 @@
                             <td>${{$product->regular_price}}</td>
                             <td>${{$product->sale_price}}</td>
                             <td>{{$product->SKU}}</td>
-                            <td>{{$product->category->name}}</td>
+                            <td>{{ $product->category ? $product->category->name : 'Uncategorized' }}</td>
                             <td>{{$product->brand ? $product->brand->name : 'No Brand'}}</td>
                             <td>{{$product->featured == 0 ? "No":"Yes"}}</td>
                             <td>{{$product->stock_status}}</td>

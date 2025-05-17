@@ -64,8 +64,8 @@
                         <div class="body-title mb-10">Brand <span class="tf-color-1">*</span>
                         </div>
                         <div class="select">
-                            <select class="" name="brand_id">
-                                <option>Choose Brand</option>
+                            <select class="" name="brand_id" required>
+                                <option value="">Choose Brand</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}">{{$brand->name}}</option>
                                 @endforeach
@@ -224,6 +224,12 @@
                     $("input[name='slug']").val(StringToSlug($(this).val()));
                 });
                 
+                $('form').on('submit', function(e) {
+                    if ($('select[name="brand_id"]').val() === "") {
+                        alert('Please select a brand.');
+                        e.preventDefault();
+                    }
+                });
             });   
             
             function StringToSlug(Text) {

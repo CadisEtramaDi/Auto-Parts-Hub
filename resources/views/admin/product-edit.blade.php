@@ -66,10 +66,10 @@
                         <div class="body-title mb-10">Brand <span class="tf-color-1">*</span>
                         </div>
                         <div class="select">
-                            <select class="" name="brand_id">
-                                <option>Choose Brand</option>
+                            <select class="" name="brand_id" required>
+                                <option value="">Choose Brand</option>
                                 @foreach ($brands as $brand)
-                                <option value="{{ $brand->id }}"{{ $product->brand_id == $brand->id ? "selected":"" }}>{{$brand->name}}</option>
+                                <option value="{{ $brand->id }}"{{ $product->brand_id == $brand->id ? "selected" : "" }}>{{$brand->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -249,5 +249,12 @@ function StringToSlug(Text) {
     .replace(/[^\w ]+/g, "")
     .replace(/ +/g, "-");
 }
+
+$('form').on('submit', function(e) {
+    if ($('select[name="brand_id"]').val() === "") {
+        alert('Please select a brand.');
+        e.preventDefault();
+    }
+});
     </script>
 @endpush

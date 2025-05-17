@@ -53,11 +53,9 @@
                 <fieldset>
                     <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
                     <div class="upload-image flex-grow">
-                        @if($category->image)
-                        <div class="item" id="imgpreview">                            
-                            <img src="{{asset('uploads/categories')}}/{{$category->image}}" alt="">
+                        <div class="item" id="imgpreview" style="{{ $category->image ? '' : 'display:none' }}">
+                            <img id="preview-img" src="{{ $category->image ? asset('uploads/categories/' . $category->image) : asset('images/uploads/uploads-1.png') }}" alt="Preview" style="max-width: 200px;">
                         </div>
-                        @endif
                         <div id="upload-file" class="item up-load">
                             <label class="uploadfile" for="myFile">
                                 <span class="icon">
@@ -87,11 +85,10 @@
     <script>
         $(function () {
             $("#myFile").on("change", function (e) {
-                const photoInp = $("#myFile");
                 const [file] = this.files;
                 if (file) {
-                    $("#imgpreview img").attr('src', URL.createObjectURL(file));
                     $("#imgpreview").show();
+                    $("#preview-img").attr('src', URL.createObjectURL(file));
                 }
             });
             $("input[name='name']").on("change", function () {

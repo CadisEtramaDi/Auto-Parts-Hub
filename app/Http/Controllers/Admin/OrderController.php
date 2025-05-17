@@ -91,18 +91,28 @@ class OrderController extends Controller
             $transaction = new Transaction();
             $transaction->order_id = $order->id;
             $transaction->payment_method = $order->payment_method;
-            $transaction->payment_status = 'completed';
+            $transaction->payment_status = 'paid';
             $transaction->transaction_id = 'TXN-' . Str::random(10);
             $transaction->amount = $order->total;
             $transaction->paid_at = Carbon::now();
             $transaction->save();
 
+            // Update order payment_status
+            $order->payment_status = 'paid';
+            $order->save();
+
             $message = 'Payment has been marked as completed.';
         } elseif ($request->payment_status === 'pending' && $order->transaction) {
             // Delete transaction record
             $order->transaction->delete();
+            // Update order payment_status
+            $order->payment_status = 'pending';
+            $order->save();
             $message = 'Payment has been marked as pending.';
         } else {
+            // Always sync order payment_status with request
+            $order->payment_status = $request->payment_status;
+            $order->save();
             $message = 'Payment status remains unchanged.';
         }
 
@@ -115,5 +125,11 @@ class OrderController extends Controller
     {
         $order->load(['user', 'items.product']);
         return view('orders.receipt', compact('order'));
+    }
+
+    public function destroy(Order $order)
+    {
+        $order->delete();
+        return redirect()->route('admin.orders.index')->with('success', 'Order deleted successfully.');
     }
 } 

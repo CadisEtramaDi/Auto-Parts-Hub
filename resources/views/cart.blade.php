@@ -10,6 +10,8 @@
   }
 </style>
 
+@php use Illuminate\Support\Str; @endphp
+
 <main class="pt-90">
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
@@ -56,7 +58,11 @@
               <tr>
                 <td>
                   <div class="shopping-cart__product-item">
-                    <img loading="lazy" src="{{ asset('storage/products/'.$item->model->image) }}" width="120" height="120" alt="{{$item->name}}" />
+                    @if(isset($item->model) && $item->model && $item->model->image)
+                        <img loading="lazy" src="{{ asset('uploads/products/thumbnails/' . trim($item->model->image)) }}" width="120" height="120" alt="{{ $item->name }}" />
+                    @else
+                        <img loading="lazy" src="{{ asset('images/default-product.png') }}" width="120" height="120" alt="{{ $item->name }}" />
+                    @endif
                   </div>
                 </td>
                 <td>

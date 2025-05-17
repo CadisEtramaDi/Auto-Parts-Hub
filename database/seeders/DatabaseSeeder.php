@@ -15,13 +15,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Only create the user if it doesn't exist
+        \App\Models\User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            ['name' => 'Test User', 'password' => bcrypt('password')]
+        );
 
         $this->call([
-            SliderSeeder::class
+            SliderSeeder::class,
+            MotorPartsSeeder::class,
+            VehiclePartsSeeder::class,
         ]);
+
+        $this->call(AssignProductCategoriesSeeder::class);
     }
 }

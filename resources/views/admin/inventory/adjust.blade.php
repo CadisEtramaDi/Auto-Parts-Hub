@@ -21,7 +21,7 @@
             <input type="text" name="reason" id="reason" class="form-control">
         </div>
         <button type="submit" class="btn btn-success">Submit</button>
-        <a href="{{ route('admin.inventory.show', $product->id) }}" class="btn btn-secondary ms-2">Cancel</a>
+        <a href="{{ route('admin.inventory.adjust', $product->id) }}" class="btn btn-secondary ms-2">Cancel</a>
     </form>
 </div>
 @endsection 

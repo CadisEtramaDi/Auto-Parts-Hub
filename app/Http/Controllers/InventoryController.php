@@ -43,16 +43,25 @@ class InventoryController extends Controller
         $type = $request->input('type');
         $reason = $request->input('reason');
 
-        if ($type === 'out' && $product->quantity < $quantity) {
+        // Find inventory for this product
+        $inventory = Inventory::where('product_id', $product->id)->first();
+        if (!$inventory) {
+            return redirect()->back()->with('error', 'No inventory record for this product.');
+        }
+
+        if ($type === 'out' && $inventory->quantity < $quantity) {
             return redirect()->back()->with('error', 'Not enough stock available.');
         }
 
-        // Update product quantity
+        // Update inventory and product quantity
         if ($type === 'in') {
-            $product->increment('quantity', $quantity);
+            $inventory->quantity += $quantity;
         } else {
-            $product->decrement('quantity', $quantity);
+            $inventory->quantity -= $quantity;
         }
+        $inventory->save();
+        $product->quantity = $inventory->quantity;
+        $product->save();
 
         // Log the transaction
         InventoryTransaction::create([
@@ -85,6 +94,10 @@ class InventoryController extends Controller
         ]);
         
         $inventory = Inventory::create($request->all());
+        // Sync product quantity
+        $product = $inventory->product;
+        $product->quantity = $inventory->quantity;
+        $product->save();
         
         // Create stock in transaction
         if ($request->quantity > 0) {
@@ -143,7 +156,7 @@ class InventoryController extends Controller
     // Show stock in form
     public function stockInForm()
     {
-        $products = Product::has('inventory')->get();
+        $products = Product::all();
         return view('admin.inventory.stock-in', compact('products'));
     }
 
@@ -165,6 +178,10 @@ class InventoryController extends Controller
         // Update inventory
         $inventory->quantity += $request->quantity;
         $inventory->save();
+        // Sync product quantity
+        $product = $inventory->product;
+        $product->quantity = $inventory->quantity;
+        $product->save();
         
         // Create transaction record
         InventoryTransaction::create([
@@ -210,6 +227,10 @@ class InventoryController extends Controller
         // Update inventory
         $inventory->quantity -= $request->quantity;
         $inventory->save();
+        // Sync product quantity
+        $product = $inventory->product;
+        $product->quantity = $inventory->quantity;
+        $product->save();
         
         // Create transaction record
         InventoryTransaction::create([

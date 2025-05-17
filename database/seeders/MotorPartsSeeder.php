@@ -21,15 +21,6 @@ class MotorPartsSeeder extends Seeder
             ]
         );
 
-        // Create or get default brand
-        $brand = Brand::firstOrCreate(
-            ['slug' => 'motor-parts-brand'],
-            [
-                'name' => 'Motor Parts Brand',
-                'slug' => 'motor-parts-brand'
-            ]
-        );
-
         // Basic categories with products
         $categories = [
             'electrical-components' => [
@@ -92,7 +83,7 @@ class MotorPartsSeeder extends Seeder
                         'stock_status' => 'instock',
                         'quantity' => rand(10, 50),
                         'category_id' => $category->id,
-                        'brand_id' => $brand->id,
+                        'brand_id' => null,
                         'featured' => 0,
                         'status' => 1
                     ]

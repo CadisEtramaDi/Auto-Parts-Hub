@@ -83,6 +83,12 @@ class PurchaseOrderController extends Controller
             $product = $item->product;
             $product->quantity += $item->quantity;
             $product->save();
+            // Sync inventory quantity
+            $inventory = \App\Models\Inventory::where('product_id', $product->id)->first();
+            if ($inventory) {
+                $inventory->quantity = $product->quantity;
+                $inventory->save();
+            }
         }
         return redirect()->route('purchase_orders.show', $purchase_order->id)->with('success', 'Purchase order marked as received and stock updated.');
     }

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-      Schema::create('orders', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->decimal('subtotal', 8, 2);
@@ -20,6 +20,10 @@ return new class extends Migration
             $table->enum('status', ['ordered', 'completed', 'canceled'])->default('ordered');
             $table->date('completed_date')->nullable();
             $table->date('canceled_date')->nullable();
+            $table->string('payment_status')->default('pending');
+            $table->string('payment_method')->default('cash');
+            $table->date('pickup_date')->nullable();
+            $table->string('pickup_time')->nullable();
             $table->timestamps();
         });
     }

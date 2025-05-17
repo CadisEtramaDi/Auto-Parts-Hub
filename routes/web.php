@@ -64,18 +64,19 @@ Route::middleware(['auth',AuthAdmin::class])->group(function(){
     Route::put('/admin/product/update',[AdminController::class,'update_product'])->name('admin.product.update');
     Route::delete('/admin/product/{id}/delete',[AdminController::class,'delete_product'])->name('admin.product.delete');
 
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
-    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('admin.inventory.create');
-    Route::post('/inventory', [InventoryController::class, 'store'])->name('admin.inventory.store');
-    Route::get('/inventory/{id}', [InventoryController::class, 'show'])->name('admin.inventory.show');
-    Route::get('/{id}/edit', [InventoryController::class, 'edit'])->name('admin.inventory.edit');
-    Route::put('/{id}', [InventoryController::class, 'update'])->name('admin.inventory.update');
-    Route::delete('/{id}', [InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
+    Route::prefix('admin/inventory')->name('admin.inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/create', [InventoryController::class, 'createInventory'])->name('create');
+        Route::post('/', [InventoryController::class, 'storeInventory'])->name('store');
+        Route::get('/{product}', [InventoryController::class, 'show'])->name('show');
+        Route::get('/{product}/adjust', [InventoryController::class, 'create'])->name('adjust');
+        Route::post('/{product}/adjust', [InventoryController::class, 'store'])->name('adjust.store');
 
-    Route::get('/inventory/stock-in/form', [InventoryController::class, 'stockInForm'])->name('admin.inventory.stock-in.form');
-    Route::post('/inventory/stock-in', [InventoryController::class, 'stockIn'])->name('admin.inventory.stock-in');
-    Route::get('/inventory/stock-out/form', [InventoryController::class, 'stockOutForm'])->name('admin.inventory.stock-out.form');
-    Route::post('/inventory/stock-out', [InventoryController::class, 'stockOut'])->name('admin.inventory.stock-out');
+        Route::get('/stock-in/form', [InventoryController::class, 'stockInForm'])->name('stock-in.form');
+        Route::post('/stock-in', [InventoryController::class, 'stockIn'])->name('stock-in');
+        Route::get('/stock-out/form', [InventoryController::class, 'stockOutForm'])->name('stock-out.form');
+        Route::post('/stock-out', [InventoryController::class, 'stockOut'])->name('stock-out');
+    });
 
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers');
     Route::get('/supplier/add', [SupplierController::class, 'create'])->name('supplier.add');
@@ -97,6 +98,7 @@ Route::middleware(['auth',AuthAdmin::class])->group(function(){
     Route::put('/admin/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
     Route::put('/admin/orders/{order}/payment-status', [App\Http\Controllers\Admin\OrderController::class, 'updatePaymentStatus'])->name('admin.orders.update-payment-status');
     Route::get('/admin/orders/{order}/receipt', [App\Http\Controllers\Admin\OrderController::class, 'receipt'])->name('admin.orders.receipt');
+    Route::delete('/admin/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
 
     Route::get('/orders/{order}/receipt', [App\Http\Controllers\Admin\OrderController::class, 'receipt'])->name('orders.receipt');
 
@@ -125,11 +127,4 @@ Route::middleware(['auth'])->group(function () {
     
     // Orders list
     Route::get('/orders', [App\Http\Controllers\UserController::class, 'orders'])->name('orders.index');
-});
-
-Route::prefix('admin/inventory')->name('admin.inventory.')->middleware('auth')->group(function () {
-    Route::get('/', [InventoryController::class, 'index'])->name('index');
-    Route::get('/{product}', [InventoryController::class, 'show'])->name('show');
-    Route::get('/{product}/adjust', [InventoryController::class, 'create'])->name('adjust');
-    Route::post('/{product}/adjust', [InventoryController::class, 'store'])->name('adjust.store');
 });
